@@ -311,7 +311,7 @@ if __name__ == '__main__':
 		files = create_file()
 		
 		# Starts GPS DAQ
-		os.system('python gps_daq.py -i' + str(time_delay) + '&')
+		os.system('python /home/pi/dosenet-raspberrypi-1/updated_gps/gps_daq.py -i' + str(time_delay) + '&')
 		
 		location = folium.Map(location=chunk,zoom_start = 15) # Fetches chunk
 		location.save('map.html')
