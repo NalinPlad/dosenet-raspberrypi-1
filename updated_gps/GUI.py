@@ -297,7 +297,7 @@ class plottingWidget(QWidget):
 			self.sendMessage('Time Delay', self.timeDelay, 'control')
 			self.sendMessage('Files', self.files, 'control')
 			self.sendMessage('Shown Sensor', self.sensorRadioButtons.selectedButton, 'control')
-			os.system('python3 map_plot.py &')
+			os.system('python /home/pi/dosenet-raspberrypi-1/updated_gps/map_plot.py &')
 			self.sensorRadioButtons.started = True
 		elif self.sensorRadioButtons.started:
 			print("Already sent message to start.")

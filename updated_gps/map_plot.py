@@ -129,19 +129,23 @@ def establish_dict():
 		if sensor == 'Air Quality PM 2.5 (ug/m3)':
 			sensor_dict['Air Quality PM 2.5 (ug/m3)'] = {'min': 0, 'max':20, 'fg': '','val':0}		
 			print("Starting air quality sensor!")
-			os.system('python ../air_quality_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
+			os.system('python /home/pi/dosenet-raspberrypi-1/air_quality_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
 			sendmsg('Air Quality', 'START', 'fromGUI')
 			
 		elif sensor == 'CO2 (ppm)':
 			sensor_dict['CO2 (ppm)'] = {'min': 300, 'max':1000, 'fg': '','val':0,'cm': ''}
-			os.system('python ../adc_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
+			os.system('python /home/pi/dosenet-raspberrypi-1/adc_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
 			sendmsg('CO2', 'START', 'fromGUI')
 			
 		elif sensor == 'Humidity (%)':
 			sensor_dict['Humidity (%)'] = {'min': 30, 'max':80, 'fg': '','val':0,'cm': ''}
+			os.system('python /home/pi/dosenet-raspberrypi-1/weather_rabbitmq_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
+			sendmsg('P/T/H', 'START', 'fromGUI')
 					
 		elif sensor == 'Pressure (Pa)':
 			sensor_dict['Pressure (Pa)'] = {'min': 99500, 'max':101400, 'fg': '','val':0,'cm': ''}
+			os.system('python /home/pi/dosenet-raspberrypi-1/weather_rabbitmq_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
+			sendmsg('P/T/H', 'START', 'fromGUI')
 				
 		elif sensor == 'Radiation (cps)':
 			sensor_dict['Radiation (cps)'] = {'min': 0, 'max':100, 'fg': '','val':0,'cm': ''}			
@@ -157,9 +161,11 @@ def establish_dict():
 			
 		elif sensor == 'Temperature (C)':
 			sensor_dict['Temperature (C)'] = {'min': 15, 'max':30, 'fg': '','val':0,'cm': ''}
+			os.system('python /home/pi/dosenet-raspberrypi-1/weather_rabbitmq_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
+			sendmsg('P/T/H', 'START', 'fromGUI')
 	
 		if not radiationRunning and sensor in ['Radiation (cps)', 'Radiation Bi (cps)', 'Radiation K (cps)', 'Radiation Tl (cps)']:
-			os.system('sudo python ../D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
+			os.system('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
 			sendmsg('Radiation', 'START', 'fromGUI')
 			radiationRunning = True
 	
@@ -180,6 +186,13 @@ def read_data():
 			sensor_dict['Air Quality PM 2.5 (ug/m3)']['val'] = data['data'][1][0]
 		elif sensor_label == "CO2":
 			sensor_dict['CO2 (ppm)']['val'] = data['data'][0]
+		elif sensor_label == "P/T/H":
+			if 'Humidity (%)' in active_sensors:
+				sensor_dict['Humidity (%)']['val'] = data['data'][1][0]
+			if 'Pressure (Pa)' in active_sensors:
+				sensor_dict['Pressure (Pa)']['val'] = data['data'][2][0]
+			if 'Temperature (C)' in active_sensors:
+				sensor_dict['Temperature (C)']['val'] = data['data'][0][0]
 		elif sensor_label == "Radiation":
 			global spectrum
 			spectrum = data['data']
@@ -214,30 +227,12 @@ def read_data():
 					thalliumCounts = thalliumCounts + count
 				thalliumCounts = thalliumCounts/float(time_delay)
 				sensor_dict['Radiation Tl (cps)']['val'] = thalliumCounts
-			
+		
 		elif sensor_label == "GPS":
 			global coordinates
 			coordinates = data['data']
-			
+					
 		data = receive(None, 'toGUI')
-
-'''
-	if 'Humidity (%)' in active_sensors:
-		weather_port = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
-		temp_data = weather_port.read_temperature()
-		pres_data = weather_port.read_pressure()
-		sensor_dict['Humidity (%)']['val'] = weather_port.read_humidity()
-	if 'Pressure (Pa)' in active_sensors:
-		weather_port = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
-		temp_data = weather_port.read_temperature()
-		sensor_dict['Pressure (Pa)']['val'] = weather_port.read_pressure()
-		humi_data = weather_port.read_humidity()
-	if 'Temperature (C)' in active_sensors:
-		weather_port = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
-		sensor_dict['Temperature (C)']['val'] = weather_port.read_temperature()
-		pres_data = weather_port.read_pressure()
-		humi_data = weather_port.read_humidity()
-'''
 
 def create_file():
 	'''
