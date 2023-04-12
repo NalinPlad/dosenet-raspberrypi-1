@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=gpsGUI
 Comment=Runs the environmental sensor GUI interface
-Icon=/home/pi/GUI_icon.png
-Exec=python3 /home/pi/GUI.py
+Icon=/home/pi/dosenet-raspberrypi-1/GUI_icon.png
+Exec=python3 /home/pi/dosenet-raspberrypi-1/updated_gps/GUI.py
 Type=Application
 Encoding=UTF-8
 Terminal=true
