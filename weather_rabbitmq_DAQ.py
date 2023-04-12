@@ -5,7 +5,7 @@ import numpy as np
 
 import board
 import time
-ipmort adafruit_bme680
+import adafruit_bme680
 
 import sys
 import os
