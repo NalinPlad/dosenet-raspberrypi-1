@@ -23,7 +23,7 @@ class air_quality_DAQ():
         # self.sensor = sensor [Not sure if this is necessary]
         #self.port = serial.Serial("/dev/serial0", baudrate=9600, timeout=1.5)
         uart = serial.Serial("/dev/ttyS0", baudrate=9600, timeout=0.95)
-        self.port = PM25_UART(uart, reset_pin)
+        self.port = PM25_UART(uart, None)
         self.outfile_name = datalog
 
         self.n_merge = int(interval)
