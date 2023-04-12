@@ -19,14 +19,14 @@ import capture
 
 sys.stdout.flush()
 
-from auxiliaries import set_verbosity
+#from auxiliaries import set_verbosity
 #from sender import ServerSender
 #from data_handler_d3s import Data_Handler_D3S
 #from data_handlers import Data_Handler_D3S
 # import spectra_fitter
 
-from globalvalues import DEFAULT_LOGFILE_D3S
-from globalvalues import DEFAULT_DATALOG_D3S
+DEFAULT_LOGFILE_D3S = "d3s.log"
+DEFAULT_DATALOG_D3S = "d3s.dat"
 
 def signal_term_handler(signal, frame):
     # If SIGTERM signal is intercepted, the SystemExit exception routines
@@ -141,7 +141,6 @@ class Manager_D3S(object):
         if verbosity is None:
             verbosity = 1
         self.v = verbosity
-        set_verbosity(self, logfile=logfile)
 
         if log:
             self.vprint(1, '')
