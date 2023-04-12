@@ -53,12 +53,10 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	arg_dict = vars(args)
 	
-
-    uart = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=10)
+	uart = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=10)
 
     # Create a GPS module instance.
     gps = adafruit_gps.GPS(uart, debug=False)  # Use UART/pyserial
-
 
     # Turn on the basic GGA and RMC info (what you typically want)
     gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")

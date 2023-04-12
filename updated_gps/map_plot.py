@@ -129,12 +129,12 @@ def establish_dict():
 		if sensor == 'Air Quality PM 2.5 (ug/m3)':
 			sensor_dict['Air Quality PM 2.5 (ug/m3)'] = {'min': 0, 'max':20, 'fg': '','val':0}		
 			print("Starting air quality sensor!")
-			os.system('python air_quality_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
+			os.system('python ../air_quality_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
 			sendmsg('Air Quality', 'START', 'fromGUI')
 			
 		elif sensor == 'CO2 (ppm)':
 			sensor_dict['CO2 (ppm)'] = {'min': 300, 'max':1000, 'fg': '','val':0,'cm': ''}
-			os.system('python adc_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
+			os.system('python ../adc_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
 			sendmsg('CO2', 'START', 'fromGUI')
 			
 		elif sensor == 'Humidity (%)':
@@ -159,7 +159,7 @@ def establish_dict():
 			sensor_dict['Temperature (C)'] = {'min': 15, 'max':30, 'fg': '','val':0,'cm': ''}
 	
 		if not radiationRunning and sensor in ['Radiation (cps)', 'Radiation Bi (cps)', 'Radiation K (cps)', 'Radiation Tl (cps)']:
-			os.system('sudo python D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
+			os.system('sudo python ../D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
 			sendmsg('Radiation', 'START', 'fromGUI')
 			radiationRunning = True
 	
