@@ -249,7 +249,7 @@ def create_file():
 				tempfileheader = tempfileheader + letter[0]
 			file_dict['Log File']['Filename'] = tempfileheader
 			
-		log_out_file = open('../../data/'+file_dict['Log File']['Filename']+'.csv', "a+", )
+		log_out_file = open('/home/pi/data/'+file_dict['Log File']['Filename']+'.csv', "a+", )
 		log_results = csv.writer(log_out_file, delimiter = ",")
 		log_results.writerow(['Epoch time', 'Latitude', 'Longitude'] + active_sensors)
 		
@@ -259,7 +259,7 @@ def create_file():
 	if file_dict['Spectrum File']['Record'] and 'Radiation (cps)' in active_sensors:
 		if file_dict['Spectrum File']['Filename'] == '':
 			file_dict['Spectrum File']['Filename'] = time.strftime('GPS_GUI_Spectrum_Data_%Y-%m-%d_%H:%M:%S', time.localtime())
-		spectrum_out_file = open('../../data/'+file_dict['Spectrum File']['Filename']+'.csv', "a+", )
+		spectrum_out_file = open('/home/pi/data/'+file_dict['Spectrum File']['Filename']+'.csv', "a+", )
 		spectrum_results = csv.writer(spectrum_out_file, delimiter = ",")
 		spectrum_results.writerow(['Epoch time'] + list(range(0,1024)))
 		files['Spectrum Out File'] = spectrum_out_file
