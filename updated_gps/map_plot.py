@@ -5,8 +5,8 @@ import os
 import time
 import pika
 import sys
-from Adafruit_BME280 import *
-BME280_OSAMPLE_8 = 4
+#from Adafruit_BME280 import *
+#BME280_OSAMPLE_8 = 4
 import json
 import gps
 import traceback
@@ -219,7 +219,8 @@ def read_data():
 			coordinates = data['data']
 			
 		data = receive(None, 'toGUI')
-		
+
+'''
 	if 'Humidity (%)' in active_sensors:
 		weather_port = BME280(t_mode=BME280_OSAMPLE_8, p_mode=BME280_OSAMPLE_8, h_mode=BME280_OSAMPLE_8)
 		temp_data = weather_port.read_temperature()
@@ -235,6 +236,7 @@ def read_data():
 		sensor_dict['Temperature (C)']['val'] = weather_port.read_temperature()
 		pres_data = weather_port.read_pressure()
 		humi_data = weather_port.read_humidity()
+'''
 
 def create_file():
 	'''
