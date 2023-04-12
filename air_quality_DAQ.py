@@ -47,7 +47,7 @@ class air_quality_DAQ():
         data = self.port.read()
 
         PM01Val = data["pm10 standard"]
-        PM25Val = data["pm125 standard"]
+        PM25Val = data["pm25 standard"]
         PM10Val = data["pm100 standard"]
         self.print_data(PM01Val,PM25Val,PM10Val)
 

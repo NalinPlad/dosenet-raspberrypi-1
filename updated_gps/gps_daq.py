@@ -88,7 +88,7 @@ if __name__ == '__main__':
 		gps.update()
         # Every second print out current location details if there's a fix.
 		current = time.monotonic()
- 		if current - last_print >= arg_dict['interval']:
+		if current - last_print >= arg_dict['interval']:
 			last_print = current
 			if not gps.has_fix:
 				# Try again if we don't have a fix yet.
