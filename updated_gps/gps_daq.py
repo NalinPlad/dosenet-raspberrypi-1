@@ -1,9 +1,15 @@
 import json
-import gps
+
 import pika
 import sys
 import time
 import argparse
+
+import board
+import busio
+import serial
+import adafruit_gps
+
 
 sys.stdout.flush()
 
@@ -47,10 +53,26 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 	arg_dict = vars(args)
 	
-	session = gps.gps("localhost","2947")
-	session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
+
+    uart = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=10)
+
+    # Create a GPS module instance.
+    gps = adafruit_gps.GPS(uart, debug=False)  # Use UART/pyserial
+
+
+    # Turn on the basic GGA and RMC info (what you typically want)
+    gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+
+    # Set update rate to once a second (1hz) which is what you typically want.
+    gps.send_command(b"PMTK220,1000")
+
+    # Main loop runs forever printing the location, etc. every second.
+    last_print = time.monotonic()
+
+	#session = gps.gps("localhost","2947")
+	#session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
 	
-	recorded_time = time.time()
+	#recorded_time = time.time()
 	
 	while True: # Starts collecting and plotting data
 		#lat, lon = uniform(37.875830,37.878), uniform(-122.268459,-122.278)
@@ -65,27 +87,23 @@ if __name__ == '__main__':
 			print("GPS daq has received command to exit")
 			break
 		
-		try:
-			report = session.next()
-			#print report
-			if report['class'] == "TPV":
-				if hasattr(report,'lat'):
-					lat = report.lat #getattr(report, 'lat', 0.0) #report.lat
-					lon = report.lon #getattr(report, 'lon', 0.0) #report.lon
-		except KeyError:
-			pass
-		except KeyboardInterrupt:
-			quit()
-		except StopIteration:
-			session = None
-			print("Gpsd has terminated")
-		
-		# print(str(lat) + ' | ' + str(lon))
-		
-		if time.time()-recorded_time >= arg_dict['interval']:
-			recorded_time = recorded_time + arg_dict['interval']
+        gps.update()
+        # Every second print out current location details if there's a fix.
+        current = time.monotonic()
+        if current - last_print >= arg_dict['interval']:
+            last_print = current
+            if not gps.has_fix:
+                # Try again if we don't have a fix yet.
+                print("Waiting for fix...")
+                continue
+            # We have a fix! (gps.has_fix is true)
+            # Print out details about the fix like location, date, etc.
+            lat = gps.latitude
+            lon = gps.longitude
 			send_data([lat, lon])
-					
-		sys.stdout.flush()
 
-# This was made by Big Al and Edward Lee
+            print("Latitude: {0:.6f} degrees".format(lat))
+            print("Longitude: {0:.6f} degrees".format(lon))
+            print("Fix quality: {}".format(gps.fix_quality))
+							
+		sys.stdout.flush()
