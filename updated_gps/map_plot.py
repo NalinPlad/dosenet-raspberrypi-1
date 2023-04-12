@@ -8,7 +8,7 @@ import sys
 #from Adafruit_BME280 import *
 #BME280_OSAMPLE_8 = 4
 import json
-import gps
+#import gps
 import traceback
 from PIL import Image
 
@@ -128,6 +128,7 @@ def establish_dict():
 	for sensor in active_sensors:
 		if sensor == 'Air Quality PM 2.5 (ug/m3)':
 			sensor_dict['Air Quality PM 2.5 (ug/m3)'] = {'min': 0, 'max':20, 'fg': '','val':0}		
+			print("Starting air quality sensor!")
 			os.system('python air_quality_DAQ.py -i ' + str(int(time_delay * 0.5)) + ' &')
 			sendmsg('Air Quality', 'START', 'fromGUI')
 			
