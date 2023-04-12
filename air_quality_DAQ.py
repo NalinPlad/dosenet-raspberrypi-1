@@ -49,7 +49,13 @@ class air_quality_DAQ():
         PM01Val = data["pm10 standard"]
         PM25Val = data["pm25 standard"]
         PM10Val = data["pm100 standard"]
-        self.print_data(PM01Val,PM25Val,PM10Val)
+        print("Particles > 0.3um / 0.1L air:", )
+        print("Particles > 0.5um / 0.1L air:", aqdata["particles 05um"])
+        print("Particles > 1.0um / 0.1L air:", aqdata["particles 10um"])
+        print("Particles > 2.5um / 0.1L air:", aqdata["particles 25um"])
+        print("Particles > 5.0um / 0.1L air:", aqdata["particles 50um"])
+        print("Particles > 10 um / 0.1L air:", aqdata["particles 100um"])
+        self.print_data(PM01Val,PM25Val,PM10Val,data["particles 03um"],data["particles 05um"],data["particles 10um"],data["particles 25um"],data["particles 50um"],data["particles 100um"])
 
         self.PM01_list.append(int(PM01Val))
         self.PM25_list.append(int(PM25Val))
