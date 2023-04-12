@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=gpsGUI
+Comment=Runs the environmental sensor GUI interface
+Icon=/home/pi/GUI_icon.png
+Exec=python3 /home/pi/GUI.py
+Type=Application
+Encoding=UTF-8
+Terminal=true
+Categories=None;
