@@ -168,7 +168,7 @@ def establish_dict():
 		if not radiationRunning and sensor in ['Radiation (cps)', 'Radiation Bi (cps)', 'Radiation K (cps)', 'Radiation Tl (cps)']:
 			child = pexpect.spawn('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i '+str(time_delay)+' &')
 			#os.system('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
-			dhild.expect('password for pi:')
+			child.expect('password for pi:')
 			child.sendline('piistasty!')
 			child.interact()
 			sendmsg('Radiation', 'START', 'fromGUI')
