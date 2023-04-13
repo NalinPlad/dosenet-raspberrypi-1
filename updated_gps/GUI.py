@@ -3,6 +3,7 @@ import sys
 import pika
 import atexit
 import os
+import pexpect
 
 from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton, QWidget, QTabWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QRadioButton, QComboBox, QLineEdit, QFormLayout, QScrollArea, QGridLayout
 from PyQt5.QtCore import Qt
@@ -297,7 +298,11 @@ class plottingWidget(QWidget):
 			self.sendMessage('Time Delay', self.timeDelay, 'control')
 			self.sendMessage('Files', self.files, 'control')
 			self.sendMessage('Shown Sensor', self.sensorRadioButtons.selectedButton, 'control')
-			os.system('python /home/pi/dosenet-raspberrypi-1/updated_gps/map_plot.py &')
+			child = pexpect.spawn('sudo python /home/pi/dosenet-raspberrypi-1/updated_gps/map_plot.py')
+			child.expect('password for pi:')
+			child.sendline('piistasty!')
+			child.interact()
+			#os.system('python /home/pi/dosenet-raspberrypi-1/updated_gps/map_plot.py &')
 			self.sensorRadioButtons.started = True
 		elif self.sensorRadioButtons.started:
 			print("Already sent message to start.")
