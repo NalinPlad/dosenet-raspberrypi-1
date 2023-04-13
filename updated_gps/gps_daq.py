@@ -90,6 +90,8 @@ if __name__ == '__main__':
 		current = time.monotonic()
 		if current - last_print >= arg_dict['interval']:
 			last_print = current
+			print(gps)
+			print(gps.latitude)
 			if not gps.has_fix:
 				# Try again if we don't have a fix yet.
 				print("Waiting for fix...")
