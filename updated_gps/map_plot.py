@@ -11,6 +11,7 @@ import json
 #import gps
 import traceback
 from PIL import Image
+import pexpect
 
 import csv
 
@@ -165,7 +166,11 @@ def establish_dict():
 			sendmsg('P/T/H', 'START', 'fromGUI')
 	
 		if not radiationRunning and sensor in ['Radiation (cps)', 'Radiation Bi (cps)', 'Radiation K (cps)', 'Radiation Tl (cps)']:
-			os.system('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
+			child = pexpect.spawn('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i '+str(time_delay)+' &')
+			#os.system('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
+			dhild.expect('password for pi:')
+			child.sendline('piistasty!')
+			child.interact()
 			sendmsg('Radiation', 'START', 'fromGUI')
 			radiationRunning = True
 	
