@@ -11,6 +11,7 @@ import json
 #import gps
 import traceback
 from PIL import Image
+import pexpect
 
 import csv
 
