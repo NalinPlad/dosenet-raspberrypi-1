@@ -25,6 +25,7 @@ def run(interval):
         while running:
             print("test run: getting data")
             data = capture.read_sensor(cfg)
+            print(data)
             time.sleep(interval)
     except KeyboardInterrupt:
         print('\nKeyboardInterrupt: stopping Manager run')
