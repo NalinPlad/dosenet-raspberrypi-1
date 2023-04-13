@@ -6,7 +6,7 @@ import time
 from ..protocol import BufferUnderflowError
 from ..transport.transport import Transport, Connection
 
-_patterns = [r"/dev/ttyUSB[\d]?", r"/dev/ttyACM[\d]?", r"/dev/tty.usbmodem[\d]+"]
+_patterns = [r"/dev/ttyACM[\d]?", r"/dev/ttyUSB[\d]?", r"/dev/tty.usbmodem[\d]+"]
 
 
 class UsbSerialConnection(Connection):
