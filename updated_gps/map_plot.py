@@ -170,7 +170,7 @@ def establish_dict():
 			#os.system('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
 			child.expect('password for pi:')
 			child.sendline('piistasty!')
-			child.interact()
+			#child.interact()
 			sendmsg('Radiation', 'START', 'fromGUI')
 			radiationRunning = True
 	
