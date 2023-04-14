@@ -323,6 +323,7 @@ class plottingWidget(QWidget):
 		channel = connection.channel()
 
 		channel.queue_declare(queue=queue)
+		print("Sending message to ",queue," - ",ID,":",cmd)
 		channel.basic_publish(exchange='', routing_key=queue, body=json.dumps({'id':ID, 'cmd':cmd}))
 		connection.close()
 

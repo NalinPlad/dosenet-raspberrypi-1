@@ -8,7 +8,6 @@ from ..transport.transport import Transport, Connection
 
 _patterns = [r"/dev/ttyACM[\d]?", r"/dev/ttyUSB[\d]?", r"/dev/tty.usbmodem[\d]+"]
 
-
 class UsbSerialConnection(Connection):
     def __init__(self, path):
         self._conn = serial.Serial(
@@ -37,6 +36,7 @@ class UsbSerialConnection(Connection):
                 ready = self._conn.inWaiting()
                 continue
             buf += self._conn.read()
+            print(buf)
             try:
                 message.read(buf)
             except BufferUnderflowError:
