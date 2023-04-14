@@ -36,7 +36,8 @@ class UsbSerialConnection(Connection):
                 ready = self._conn.inWaiting()
                 continue
             buf += self._conn.read()
-            print(buf)
+            if buf == b'\x00':
+                return None
             try:
                 message.read(buf)
             except BufferUnderflowError:
