@@ -30,6 +30,7 @@ def pre_run():
             for dev in kdevs:
                 ikconn = kromek.connect(dev)
                 res = check_sensor(ikonn)
+                print(res)
                 if bool(res):
                     kconn = ikconn
                     print("Kromek device found at", kconn)
