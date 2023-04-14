@@ -49,9 +49,11 @@ def check_sensor(conn):
     res = kromek.get_value(conn, param="status")
     return res
 
+'''
 def check_sensor(cfg):
     res = kromek.get_value(cfg["kconn"], param="status")
     return res
+'''
 
 def read_sensor(cfg):
     print("read_sensor()")
