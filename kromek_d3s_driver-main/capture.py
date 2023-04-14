@@ -20,16 +20,19 @@ def pre_run():
     kdevs = kromek.discover()
     print(f"Discovered {kdevs}")
     if len(kdevs) <= 0:
+        print("Exiting early, no devices found!")
         return
 
     try:
         kconn = kromek.connect(kdevs[0])
         if len(kdevs) > 1:
+            print("Multiple devices found! Checking for kromek device")
             for dev in kdevs:
                 ikconn = kromek.connect(dev)
                 res = check_sensor(ikonn)
                 if bool(res):
                     kconn = ikconn
+                    print("Kromek device found at", kconn)
     except Exception:
         return
 
