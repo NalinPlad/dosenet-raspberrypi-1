@@ -29,12 +29,13 @@ def pre_run():
             print("Multiple devices found! Checking for kromek device")
             for dev in kdevs:
                 ikconn = kromek.connect(dev)
-                res = check_sensor(ikonn)
+                res = check_sensor(ikconn)
                 print(res)
                 if bool(res):
                     kconn = ikconn
                     print("Kromek device found at", kconn)
-    except Exception:
+    except Exception as e:
+        print(e)
         return
 
     cfg = {k: base_config[k] for k in base_config}
