@@ -24,6 +24,12 @@ def pre_run():
 
     try:
         kconn = kromek.connect(kdevs[0])
+        if len(kdevs) > 1:
+            for dev in kdevs:
+                ikconn = kromek.connect(dev)
+                res = check_sensor(ikonn)
+                if bool(res):
+                    kconn = ikconn
     except Exception:
         return
 
@@ -32,6 +38,13 @@ def pre_run():
 
     return cfg
 
+def check_sensor(conn):
+    res = kromek.get_value(conn, param="status")
+    return res
+
+def check_sensor(cfg):
+    res = kromek.get_value(cfg["kconn"], param="status")
+    return res
 
 def read_sensor(cfg):
     print("read_sensor()")
