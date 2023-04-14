@@ -3,6 +3,7 @@
 import kromek
 import TimerLoop
 import datetime
+import traceback
 
 base_config = {
     "upload_period": 10,
@@ -36,6 +37,7 @@ def pre_run():
                     print("Kromek device found at", kconn)
     except Exception as e:
         print(e)
+        traceback.print_exc()
         return
 
     cfg = {k: base_config[k] for k in base_config}
