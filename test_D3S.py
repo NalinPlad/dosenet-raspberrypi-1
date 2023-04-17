@@ -10,7 +10,7 @@ import os
 sys.path.append("/home/pi/dosenet-raspberrypi-1/kromek_d3s_driver-main")
 import capture
 
-interval = sys.argv[0]
+interval = int(sys.argv[0])
 
 sys.stdout.flush()
 
