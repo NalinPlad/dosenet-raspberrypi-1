@@ -10,10 +10,12 @@ import os
 sys.path.append("/home/pi/dosenet-raspberrypi-1/kromek_d3s_driver-main")
 import capture
 
+interval = sys.argv[0]
+
 sys.stdout.flush()
 
 running = True
-interval = 1
+#interval = 1
 
 def run(interval):
     """
@@ -35,4 +37,5 @@ if __name__ == '__main__':
     '''
     Execute the main method with argument parsing enabled.
     '''
+    print(interval)
     run(interval)
