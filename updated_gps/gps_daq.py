@@ -59,10 +59,12 @@ if __name__ == '__main__':
 	gps = adafruit_gps.GPS(uart, debug=False)  # Use UART/pyserial
 
     # Turn on the basic GGA and RMC info (what you typically want)
-	gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+	#gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+	# Turn on everything (not all of it is parsed!)
+	gps.send_command(b'PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0')
 
     # Set update rate to once a second (1hz) which is what you typically want.
-	gps.send_command(b"PMTK220,1000")
+	gps.send_command(b"PMTK220,500")
 
     # Main loop runs forever printing the location, etc. every second.
 	last_print = time.monotonic()
