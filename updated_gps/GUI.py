@@ -298,11 +298,6 @@ class plottingWidget(QWidget):
 			self.sendMessage('Time Delay', self.timeDelay, 'control')
 			self.sendMessage('Files', self.files, 'control')
 			self.sendMessage('Shown Sensor', self.sensorRadioButtons.selectedButton, 'control')
-			#child = pexpect.spawn('sudo python /home/pi/dosenet-raspberrypi-1/updated_gps/map_plot.py')
-			#child.expect('password for pi:')
-			#child.sendline('piistasty!')
-			#child.interact()
-			os.system('expect /home/pi/dosenet-raspberrypi-1/run_D3S.exp 2')
 			os.system('python /home/pi/dosenet-raspberrypi-1/updated_gps/map_plot.py &')
 			self.sensorRadioButtons.started = True
 		elif self.sensorRadioButtons.started:
