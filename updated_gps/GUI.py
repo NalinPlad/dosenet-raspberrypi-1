@@ -302,7 +302,7 @@ class plottingWidget(QWidget):
 			#child.expect('password for pi:')
 			#child.sendline('piistasty!')
 			#child.interact()
-			os.system('expect /home/pi/dosenet-raspberrypi-1/run_D3S.exp')
+			os.system('expect /home/pi/dosenet-raspberrypi-1/run_D3S.exp 2')
 			os.system('python /home/pi/dosenet-raspberrypi-1/updated_gps/map_plot.py &')
 			self.sensorRadioButtons.started = True
 		elif self.sensorRadioButtons.started:

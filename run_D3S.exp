@@ -2,9 +2,9 @@
 
 #set interval [lindex $argv 0];
 
-#spawn sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i $interval
+spawn sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i $interval
 
-spawn sudo touch /home/pi/test.py
+#spawn sudo touch /home/pi/test.py
 expect "password for pi:"
 send -- "piistasty!\r"
 
