@@ -169,7 +169,7 @@ def establish_dict():
 			#child = pexpect.spawn('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i '+str(time_delay))
 			#pexpect.run('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i '+str(time_delay)+' &', events={'password for pi:': 'piistasty!'})
 			#os.system('expect /home/pi/dosenet-raspberrypi-1/run_D3S.exp ' + str(time_delay))
-			os.system('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
+			#os.system('sudo python /home/pi/dosenet-raspberrypi-1/D3S_rabbitmq_DAQ.py -i ' + str(time_delay) + ' &')
 			#child.expect('password for pi:')
 			#child.sendline('piistasty!')
 			print("Started Radiation script!")
