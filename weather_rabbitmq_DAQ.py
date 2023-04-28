@@ -44,7 +44,7 @@ class weather_DAQ(object):
 
             self.temp_list.append(degrees)
             self.humid_list.append(humidity)
-            self.press_list.append(atm)
+            self.press_list.append(altitude)
 
 
             if len(self.temp_list)>=self.n_merge:

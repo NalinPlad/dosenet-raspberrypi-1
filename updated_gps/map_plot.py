@@ -277,8 +277,10 @@ def write_data():
 	if file_dict['Log File']['Record']:
 		row = [time.time(), coordinates[0], coordinates[1]]
 		for sensor in active_sensors:
+			print(sensor_dict)
 			row.append(sensor_dict[sensor]['val'])
 		files['Data Log Results'].writerow(row)
+		files['Data Log Out File'].flush()
 	
 	if file_dict['Spectrum File']['Record'] and 'Radiation (cps)' in active_sensors:
 		files['Spectrum Results'].writerow([time.time()] + spectrum)
