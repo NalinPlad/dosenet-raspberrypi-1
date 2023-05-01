@@ -247,7 +247,7 @@ def create_file():
 	files = {}
 	if file_dict['Log File']['Record']:
 		if file_dict['Log File']['Filename'] == '':
-			tempfileheader = time.strftime('GPS_GUI_Data_%Y-%m-%d_%H:%M:%S_', time.localtime())
+			tempfileheader = time.strftime('GPS_GUI_Data_%Y-%m-%d_%H-%M-%S_', time.localtime())
 			for letter in active_sensors:
 				tempfileheader = tempfileheader + letter[0]
 			file_dict['Log File']['Filename'] = tempfileheader
@@ -261,10 +261,10 @@ def create_file():
 	
 	if file_dict['Spectrum File']['Record'] and 'Radiation (cps)' in active_sensors:
 		if file_dict['Spectrum File']['Filename'] == '':
-			file_dict['Spectrum File']['Filename'] = time.strftime('GPS_GUI_Spectrum_Data_%Y-%m-%d_%H:%M:%S', time.localtime())
+			file_dict['Spectrum File']['Filename'] = time.strftime('GPS_GUI_Spectrum_Data_%Y-%m-%d_%H-%M-%S', time.localtime())
 		spectrum_out_file = open('/home/pi/data/'+file_dict['Spectrum File']['Filename']+'.csv', "a+", )
 		spectrum_results = csv.writer(spectrum_out_file, delimiter = ",")
-		spectrum_results.writerow(['Epoch time'] + list(range(0,1024)))
+		spectrum_results.writerow(['Epoch time'] + list(range(0,4096)))
 		files['Spectrum Out File'] = spectrum_out_file
 		files['Spectrum Results'] = spectrum_results
 		
@@ -366,7 +366,7 @@ if __name__ == '__main__':
 				
 			location.save('map.html') # Saves map as html
 			
-			os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key --clearmodifiers ctrl+r') # Reloads page
+			#os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key --clearmodifiers ctrl+r') # Reloads page
 			
 			time.sleep(time_delay)
 	finally:
