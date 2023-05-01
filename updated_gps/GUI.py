@@ -14,7 +14,7 @@ class GUI(QMainWindow):
 		
 		# Initializes parameters
 		self.title = 'GUI'
-		self.left, self.top, self.width, self.height = 560, 20, 240, 440
+		self.left, self.top, self.width, self.height = 560, 25, 240, 445
 		
 		# Clears used queues
 		self.clearQueue('control')
@@ -170,7 +170,7 @@ class sensorChecklist(QScrollArea):
 		super(sensorChecklist, self).__init__()
 		
 		# Initializes tuple of sensors/list of check buttons/list of selected sensors
-		self.sensors = ('Air Quality PM 2.5 (ug/m3)','CO2 (ppm)', 'Humidity (%)', 'Pressure (Pa)','Radiation (cps)','Radiation Bi (cps)','Radiation K (cps)','Radiation Tl (cps)', 'Temperature (C)') # Make sure this is in alphabetical order
+		self.sensors = ('Air Quality PM 2.5 (ug/m3)','Humidity (%)', 'Pressure (Pa)','Radiation (cps)','Temperature (C)') # Make sure this is in alphabetical order
 		self.checkButtons = []
 		self.selectedSensors = []
 		self.widget = QWidget()
