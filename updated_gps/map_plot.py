@@ -379,7 +379,7 @@ if __name__ == '__main__':
 		
 		# Sends exit commands to daqs
 		for sensor in active_sensors:
-			if sensor not in ['Humidity (%)', 'Pressure (Pa)', 'Radiation Bi (cps)', 'Radiation K (cps)', 'Radiation Tl (cps)', 'Temperature (C)']:
+			if sensor not in ['Humidity (%)', 'Pressure (Pa)', 'Radiation Bi (cps)', 'Radiation K (cps)', 'Radiation Tl (cps)']:
 				sendmsg(sensor.split(' PM')[0].split(' (')[0], 'EXIT','fromGUI')
 		sendmsg('GPS', 'EXIT', 'fromGUI')
 		
