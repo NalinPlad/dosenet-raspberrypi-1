@@ -327,7 +327,7 @@ if __name__ == '__main__':
 		#os.system('xdotool key Ctrl-l')
 		#os.system('xdotool type "--disable-cache"')
 		#os.system('xdotool key Return')
-		os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key --disable-cache Return')
+		os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key ctrl+l type "--disable-cache" key Return')
 		
 		for key in sensor_dict:	
 			sensor_dict[key]['fg'] = folium.FeatureGroup(name=key) # Establishes Feature Groups
@@ -379,6 +379,7 @@ if __name__ == '__main__':
 		os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key --clearmodifiers ctrl+w') # Closes window after exit
 		
 		# Sends exit commands to daqs
+		print("Sending EXIT to active_sensors:",active_sensors)
 		for sensor in active_sensors:
 			print("Sending EXIT to ", sensor)
 			sendmsg(sensor,'EXIT','fromGUI')
