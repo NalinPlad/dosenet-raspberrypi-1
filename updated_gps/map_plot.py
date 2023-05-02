@@ -326,8 +326,9 @@ if __name__ == '__main__':
 		os.system('xdotool windowsize `xdotool search --onlyvisible --name "Chromium"` 560 440')
 		#os.system('xdotool key Ctrl-l')
 		#os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key ctrl-l')
-		os.system('xdotool search --onlyvisible --name "Chromium" windowfocus type "--disable-cache"')
+		#os.system('xdotool search --onlyvisible --name "Chromium" windowfocus type "--disable-cache"')
 		#os.system('xdotool key Return')
+		os.system('bash /home/pi/browser_control.sh')
 
 		for key in sensor_dict:	
 			sensor_dict[key]['fg'] = folium.FeatureGroup(name=key) # Establishes Feature Groups
