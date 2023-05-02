@@ -325,10 +325,10 @@ if __name__ == '__main__':
 		time.sleep(5)
 		os.system('xdotool windowsize `xdotool search --onlyvisible --name "Chromium"` 560 440')
 		#os.system('xdotool key Ctrl-l')
-		#os.system('xdotool type "--disable-cache"')
-		#os.system('xdotool key Return')
-		os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key ctrl+l type "--disable-cache" key Return')
-		
+		os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key ctrl-l')
+		os.system('xdotool type "--disable-cache"')
+		os.system('xdotool key Return')
+
 		for key in sensor_dict:	
 			sensor_dict[key]['fg'] = folium.FeatureGroup(name=key) # Establishes Feature Groups
 			sensor_dict[key]['cm'] = branca.colormap.LinearColormap(['#6801D2','#1996F3','#4Cf2CE','#B3F295','#FF934D','#FF0000'], vmin=sensor_dict[key]['min'], vmax=sensor_dict[key]['max'], caption=key)
@@ -382,9 +382,15 @@ if __name__ == '__main__':
 		print("Sending EXIT to active_sensors:",active_sensors)
 		for sensor in active_sensors:
 			print("Sending EXIT to ", sensor)
-			sendmsg(sensor,'EXIT','fromGUI')
-			if sensor not in ['Humidity (%)', 'Pressure (Pa)', 'Radiation Bi (cps)', 'Radiation K (cps)', 'Radiation Tl (cps)']:
-				sendmsg(sensor.split(' PM')[0].split(' (')[0], 'EXIT','fromGUI')
+			if sensor in ['Temperature (C)', 'Humidity (%)', 'Pressure (Pa)']:
+				sendmsg('P/T/H', 'EXIT', 'fromGUI')
+			elif sensor in ['Radiation (cps)', 'Radiation Bi (cps)', 'Radiation K (cps)', 'Radiation Tl (cps)']:
+				sendmsg('Radiation', 'EXIT', 'fromGUI')
+			elif sensor=='Air Quality PM 2.5 (ug/m3)':
+				sendmsg('Air Quality', 'EXIT', 'fromGUI')
+			else:
+				sendmsg(sensor,'EXIT','fromGUI')
+
 		sendmsg('GPS', 'EXIT', 'fromGUI')
 		
 		traceback.print_exc()
