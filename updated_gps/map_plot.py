@@ -324,9 +324,10 @@ if __name__ == '__main__':
 		os.system('xdg-open map.html') # Opens the window containing map
 		time.sleep(5)
 		os.system('xdotool windowsize `xdotool search --onlyvisible --name "Chromium"` 560 440')
-		os.system('xdotool key Ctrl-l')
-		os.system('xdotool type "--disable-cache"')
-		os.system('xdotool key Return')
+		#os.system('xdotool key Ctrl-l')
+		#os.system('xdotool type "--disable-cache"')
+		#os.system('xdotool key Return')
+		os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key --disable-cache Return')
 		
 		for key in sensor_dict:	
 			sensor_dict[key]['fg'] = folium.FeatureGroup(name=key) # Establishes Feature Groups
