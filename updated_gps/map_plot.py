@@ -321,9 +321,9 @@ if __name__ == '__main__':
 		location = folium.Map(location=chunk,zoom_start = 15) # Fetches chunk
 		location.save('map.html')
 		
-		os.system('bash /home/pi/launch.sh')
-		#os.system('xdg-open map.html') # Opens the window containing map
-		#time.sleep(5)
+		#os.system('bash /home/pi/launch.sh')
+		os.system('xdg-open map.html') # Opens the window containing map
+		time.sleep(5)
 		os.system('xdotool windowsize `xdotool search --onlyvisible --name "Chromium"` 560 440')
 		#os.system('xdotool key Ctrl-l')
 		#os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key ctrl-l')
@@ -348,7 +348,7 @@ if __name__ == '__main__':
 			if coordinates != [0, 0]:
 				chunk = coordinates
 			
-			location = folium.Map(location=chunk,zoom_start = 15)
+			location = folium.Map(location=chunk,zoom_start = 10)
 			
 			for key in sensor_dict:
 				sensor_dict[key]['fg'].show =  (bool(key == shown_sensor)) # Sets the selected sensor to visible
@@ -371,7 +371,7 @@ if __name__ == '__main__':
 				
 			location.save('map.html') # Saves map as html
 			
-			#os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key --clearmodifiers ctrl+r') # Reloads page
+			os.system('xdotool search --onlyvisible --name "Chromium" windowfocus key --clearmodifiers ctrl+r') # Reloads page
 			
 			time.sleep(time_delay)
 	finally:
