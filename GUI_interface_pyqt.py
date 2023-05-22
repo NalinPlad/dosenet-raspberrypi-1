@@ -518,12 +518,14 @@ class App(QWidget):
             iplot.showGrid(x=True, y=True)
             legend = pg.LegendItem(size=(110,90), offset=(100,10))
             legend.setParentItem(iplot)
-            iplot.setLabel('left', '<h2>P/T/H</h2>')
+            iplot.setLabel('left', '<h2>P/T/H/Alt./VOC</h2>')
             iplot.setLabel('bottom', '<h2>Time</h2>')
-            colors = [(255,0,0),(0,255,0),(0,0,255)]
-            names = ['<h4>Temp/23C</h4>',
-                     '<h4>Humidity/50%</h4>',
-                     '<h4>Pressure/atm</h4>']
+            colors = [(255,0,0),(0,255,0),(0,0,255),(255,255,0),(0,255,255)]
+            names = ['<h4>T/T_ave</h4>',
+                     '<h4>H/H_ave</h4>',
+                     '<h4>P/P_ave</h4>',
+                     '<h4>Alt./Alt_ave</h4>',
+                     '<h4>VOC/VOC_ave</h4>']
 
             self.plot_list[sensor] = []
             self.err_list[sensor] = []
@@ -574,14 +576,18 @@ class App(QWidget):
 
         if sensor==PTH:
             if len(self.data[sensor][0]) == 0:
-                temp, hum, press = 0., 0., 0.
+                temp, hum, press, alt, gas = 0., 0., 0., 0., 0.
             else:
                 temp = "{:.1f}".format(np.mean(self.data[sensor][0]))
                 hum = "{:.1f}".format(np.mean(self.data[sensor][1]))
                 press = "{:.1f}".format(np.mean(self.data[sensor][2]))
-            sensor_text = ["Temperature =",temp,
-                           " C   Humidity =",hum,
-                           "%    Pressure =",press," atm"]
+                alt = "{:.1f}".format(np.mean(self.data[sensor][3]))
+                gas = "{:.1f}".format(np.mean(self.data[sensor][4]))
+            sensor_text = ["T =",temp,
+                           " C, H =",hum,
+                           "%, P =",press,
+                           " atm, Alt. = ",alt,
+                           " m, VOC = ",gas]
             self.sensor_list[sensor] = sensor_text
 
         if sensor==AIR:
@@ -618,7 +624,7 @@ class App(QWidget):
             self.data[sensor] = [[[],[]],[[],[]],[[],[]]]
 
         if sensor==PTH:
-            self.data[sensor] = [[[],[]],[[],[]],[[],[]]]
+            self.data[sensor] = [[[],[]],[[],[]],[[],[]],[[],[]],[[],[]]]
 
         if sensor==CO2:
             self.data[sensor] = [[],[]]
@@ -639,9 +645,11 @@ class App(QWidget):
         if sensor==PTH:
             base_data = np.random.random(1)[0]
             base_err = 0.05*np.random.random(3)
-            data = [[base_data*20,base_err[0]],
-                    [base_data*50,base_err[1]],
-                    [base_data*1.1,base_err[2]]]
+            data = [[np.random.random(1)[0],0.05*np.random.random(3)[0]],
+                    [np.random.random(1)[0],0.05*np.random.random(3)[1]],
+                    [np.random.random(1)[0],0.05*np.random.random(3)[2]],
+                    [np.random.random(1)[0],0.05*np.random.random(3)[2]],
+                    [np.random.random(1)[0],0.05*np.random.random(3)[2]]]
         if sensor==CO2:
             data = [np.random.random(1)[0],0.05*np.random.random(1)[0]]
         return data
@@ -680,6 +688,10 @@ class App(QWidget):
             self.data[PTH][1][1].append(data[1][1])
             self.data[PTH][2][0].append(data[2][0])
             self.data[PTH][2][1].append(data[2][1])
+            self.data[PTH][3][0].append(data[3][0])
+            self.data[PTH][3][1].append(data[3][1])
+            self.data[PTH][4][0].append(data[4][0])
+            self.data[PTH][4][1].append(data[4][1])
 
             if len(self.data[sensor][0][0]) > self.ndata:
                 self.data[sensor][0][0].pop(0)
@@ -688,6 +700,10 @@ class App(QWidget):
                 self.data[sensor][1][1].pop(0)
                 self.data[sensor][2][0].pop(0)
                 self.data[sensor][2][1].pop(0)
+                self.data[sensor][3][0].pop(0)
+                self.data[sensor][3][1].pop(0)
+                self.data[sensor][4][0].pop(0)
+                self.data[sensor][4][1].pop(0)
 
         if sensor==AIR:
             self.data[AIR][0][0].append(data[0][0])
@@ -731,23 +747,35 @@ class App(QWidget):
 
         if sensor==PTH:
             self.err_list[sensor][0].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][0][0])/23.0,
-                                             height=np.asarray(self.data[sensor][0][1])/23.0,
+                                             y=np.asarray(self.data[sensor][0][0])/np.mean(self.data[sensor][0][0]),
+                                             height=np.asarray(self.data[sensor][0][1])/np.mean(self.data[sensor][0][0]),
                                              beam=0.15)
             self.plot_list[sensor][0].setData(self.time_data[sensor],
-                                              np.asarray(self.data[sensor][0][0])/23.0)
+                                              np.asarray(self.data[sensor][0][0])/np.mean(self.data[sensor][0][0]))
             self.err_list[sensor][1].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][1][0])/50.0,
-                                             height=np.asarray(self.data[sensor][1][1])/50.0,
+                                             y=np.asarray(self.data[sensor][1][0])/np.mean(self.data[sensor][1][0]),
+                                             height=np.asarray(self.data[sensor][1][1])/np.mean(self.data[sensor][1][0]),
                                              beam=0.15)
             self.plot_list[sensor][1].setData(self.time_data[sensor],
-                                              np.asarray(self.data[sensor][1][0])/50.0)
+                                              np.asarray(self.data[sensor][1][0])/np.mean(self.data[sensor][1][0]))
             self.err_list[sensor][2].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][2][0]),
-                                             height=np.asarray(self.data[sensor][2][1]),
+                                             y=np.asarray(self.data[sensor][2][0])/np.mean(self.data[sensor][2][0]),
+                                             height=np.asarray(self.data[sensor][2][1])/np.mean(self.data[sensor][2][0]),
                                              beam=0.15)
             self.plot_list[sensor][2].setData(self.time_data[sensor],
-                                              np.asarray(self.data[sensor][2][0]))
+                                              np.asarray(self.data[sensor][2][0])/np.mean(self.data[sensor][2][0]))
+            self.err_list[sensor][3].setData(x=np.asarray(self.time_data[sensor]),
+                                             y=np.asarray(self.data[sensor][3][0])/np.mean(self.data[sensor][3][0]),
+                                             height=np.asarray(self.data[sensor][3][1])/np.mean(self.data[sensor][3][0]),
+                                             beam=0.15)
+            self.plot_list[sensor][3].setData(self.time_data[sensor],
+                                              np.asarray(self.data[sensor][3][0])/np.mean(self.data[sensor][3][0]))
+            self.err_list[sensor][4].setData(x=np.asarray(self.time_data[sensor]),
+                                             y=np.asarray(self.data[sensor][4][0])/np.mean(self.data[sensor][4][0]),
+                                             height=np.asarray(self.data[sensor][4][1])/np.mean(self.data[sensor][4][0]),
+                                             beam=0.15)
+            self.plot_list[sensor][4].setData(self.time_data[sensor],
+                                              np.asarray(self.data[sensor][4][0])/np.mean(self.data[sensor][4][0]))
 
         if sensor==AIR:
             self.err_list[sensor][0].setData(x=np.asarray(self.time_data[sensor]),
@@ -801,13 +829,19 @@ class App(QWidget):
                 temp = "{:.1f}".format(self.data[sensor][0][0][-1])
                 hum = "{:.1f}".format(self.data[sensor][1][0][-1])
                 press = "{:.1f}".format(self.data[sensor][2][0][-1])
+                alt = "{:.1f}".format(self.data[sensor][3][0][-1])
+                gas = "{:.1f}".format(self.data[sensor][4][0][-1])
             else:
                 temp = "0.0"
                 hum = "0.0"
                 press = "0.0"
+                alt = "0.0"
+                gas = "0.0"
             self.sensor_list[sensor][1] = temp
             self.sensor_list[sensor][3] = hum
             self.sensor_list[sensor][5] = press
+            self.sensor_list[sensor][7] = alt
+            self.sensor_list[sensor][9] = gas
             self.setDisplayBackground(sensor,np.mean(self.data[sensor][1][0]))
 
         if sensor==AIR:
@@ -932,7 +966,7 @@ class App(QWidget):
                 if sensor==AIR:
                     self.data[sensor] = [[[],[]],[[],[]],[[],[]]]
                 if sensor==PTH:
-                    self.data[sensor] = [[[],[]],[[],[]],[[],[]]]
+                    self.data[sensor] = [[[],[]],[[],[]],[[],[]],[[],[]],[[],[]]]
                 if sensor==CO2:
                     self.data[sensor] = [[],[]]
                 self.updatePlot(sensor)
