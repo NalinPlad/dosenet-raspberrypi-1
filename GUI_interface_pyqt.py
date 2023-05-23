@@ -28,7 +28,8 @@ from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5.QtGui import QPalette, QFont
 #from PyQt5.QtGui import QTabWidget, QTabBar, QComboBox
 from PyQt5.QtWidgets import QTabWidget, QTabBar, QComboBox
-from PyQt5.QtGui import QStyleFactory
+#from PyQt5.QtGui import QStyleFactory
+from PyQt5.QtWidgets import QStyleFactory
 
 import pyqtgraph as pg
 
