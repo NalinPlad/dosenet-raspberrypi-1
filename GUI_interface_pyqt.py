@@ -642,10 +642,13 @@ class App(QWidget):
         if self.start_time is None:
             self.start_time = float(format(float(time.time()), '.2f'))
         itime = float(format(float(time.time()), '.2f')) - self.start_time
-        self.time_data[sensor].append(itime)
+        if sensor!='GPS':
+            self.time_data[sensor].append(itime)
         #if len(self.time_data[sensor]) > self.ndata:
         #    self.time_data[sensor].pop(0)
         if sensor=="GPS":
+            itime = float(format(float(time.time()), '.2f'))
+            self.time_data['GPS'].append(itime)
             self.data["GPS"][0].append(data[0])
             self.data["GPS"][1].append(data[1])
         if sensor==PTH:
@@ -956,7 +959,6 @@ class App(QWidget):
             while message is not None:
                 if message['id']=='GPS':
                     got_gps = True
-                    print("Got GPS data")
                 self.addData(message['id'],message['data'])
                 if message['id']!='GPS':
                     self.updatePlot(message['id'])
