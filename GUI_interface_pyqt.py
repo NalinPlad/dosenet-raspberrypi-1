@@ -563,8 +563,8 @@ class App(QWidget):
                 alt = "{:.1f}".format(np.mean(self.data[sensor][3]))
                 gas = "{:.1f}".format(np.mean(self.data[sensor][4]))
             sensor_text = ["T =",temp,
-                           " C, H =",hum,
-                           "%, P =",press,
+                           "°C, H =",hum,
+                           "%, P =",press/1000.,
                            " atm, Alt. = ",alt,
                            " m, VOC = ",gas]
             self.sensor_list[sensor] = sensor_text
@@ -812,7 +812,7 @@ class App(QWidget):
             if len(self.data[sensor][0][0]) > 0:
                 temp = "{:.1f}".format(self.data[sensor][0][0][-1])
                 hum = "{:.1f}".format(self.data[sensor][1][0][-1])
-                press = "{:.1f}".format(self.data[sensor][2][0][-1])
+                press = "{:.1f}".format(self.data[sensor][2][0][-1]/1000.)
                 alt = "{:.1f}".format(self.data[sensor][3][0][-1])
                 gas = "{:.1f}".format(self.data[sensor][4][0][-1])
             else:

@@ -95,7 +95,7 @@ if __name__ == '__main__':
 			# Print out details about the fix like location, date, etc.
 			lat = gps.latitude
 			lon = gps.longitude
-			if not arg_dict.test:
+			if not arg_dict['test']:
 				print("GPS: ",[lat,lon])
 				send_data([lat, lon])
 
