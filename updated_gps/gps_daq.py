@@ -49,6 +49,7 @@ def receive(ID, queue):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--interval", "-i", type=int, default=1)
+	parser.add_argement("--test", "-t", action="store_true", default=False)
 
 	args = parser.parse_args()
 	arg_dict = vars(args)
@@ -69,31 +70,23 @@ if __name__ == '__main__':
     # Main loop runs forever printing the location, etc. every second.
 	last_print = time.monotonic()
 
-	#session = gps.gps("localhost","2947")
-	#session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
-	
-	#recorded_time = time.time()
 
 	while True: # Starts collecting and plotting data
-		#lat, lon = uniform(37.875830,37.878), uniform(-122.268459,-122.278)
-		
-		# Uncomment the following block and delete the preceeding when it is time to incorporate actual gps data
 		
 		lat, lon = 0, 0
 		
-		command = receive('GPS', 'fromGUI')
+		if not arg_dict.test:
+			command = receive('GPS', 'fromGUI')
 
-		if command == 'EXIT':
-			print("GPS daq has received command to exit")
-			break
+			if command == 'EXIT':
+				print("GPS daq has received command to exit")
+				break
 		
 		gps.update()
         # Every second print out current location details if there's a fix.
 		current = time.monotonic()
 		if current - last_print >= arg_dict['interval']:
 			last_print = current
-			print(gps)
-			print(gps.latitude)
 			if not gps.has_fix:
 				# Try again if we don't have a fix yet.
 				print("Waiting for fix...")
@@ -102,7 +95,8 @@ if __name__ == '__main__':
 			# Print out details about the fix like location, date, etc.
 			lat = gps.latitude
 			lon = gps.longitude
-			send_data([lat, lon])
+			if not arg_dict.test:
+				send_data([lat, lon])
 
 			print("Latitude: {0:.6f} degrees".format(lat))
 			print("Longitude: {0:.6f} degrees".format(lon))

@@ -207,43 +207,34 @@ class App(QWidget):
 
 
     def startSensor(self, sensor):
-        fname = "/home/pi/data/" + self.file_prefix + '_' + \
-                str(dt.datetime.today()).split()[0]
+        if sensor=='GPS':
+            py = 'python3'
+            script = 'updated_gps/gps_daq.py'
+            log = 'gps_log'
         if sensor==PTH:
             py = 'python3'
             script = 'weather_rabbitmq_DAQ.py'
             log = 'weather_gui.log'
-            if self.saveData:
-                fname = fname + "_PTH.csv"
         if sensor==AIR:
             py = 'python'
             script = 'air_quality_DAQ.py'
             log = 'AQ_gui.log'
-            if self.saveData:
-                fname = fname + "_AQ.csv"
         if sensor==RAD:
             py = 'sudo python'
             script = 'D3S_rabbitmq_DAQ.py'
             log = 'rad_gui.log'
-            if self.saveData:
-                fname = fname + "_D3S.csv"
         if sensor==CO2:
             py = 'python'
             script = 'adc_DAQ.py'
             log = 'CO2_gui.log'
-            if self.saveData:
-                fname = fname + "_CO2.csv"
 
         cmd_head = '{} /home/pi/dosenet-raspberrypi-1/{}'.format(py, script)
         cmd_options = ' -i {}'.format(self.integration_time)
-        if self.saveData:
-            cmd_options = cmd_options + ' -d {}'.format(fname)
         cmd_log = ' > /tmp/{} 2>&1 &'.format(log)
         cmd = cmd_head + cmd_options + cmd_log
 
         print(cmd)
         os.system(cmd)
-
 
     def sensorButtonState(self,b):
      if b.isChecked() == True:
@@ -253,11 +244,9 @@ class App(QWidget):
         print("{} is deselected".format(b.text()))
         self.rmvSensorTab(b.text())
 
-
     def setDisplayText(self, sensor):
         full_text = ' '.join(str(r) for r in self.sensor_list[sensor])
         self.data_display[sensor].setText(full_text)
-
 
     def setSelectionTab(self):
         '''
@@ -347,7 +336,6 @@ class App(QWidget):
         self.location_text.close()
         self.location_box.close()
 
-
     def setSaveData(self,b):
         if b.isChecked() == True:
             print("Saving sensor data")
@@ -369,33 +357,26 @@ class App(QWidget):
             self.location_box.close()
             self.textbox.close()
 
-
     def setIntegrationTime(self,text):
         self.integration_time = int(text)
 
-
     def setNData(self,text):
         self.ndata = int(text)
-
 
     def setGroupID(self,text):
         self.group_id = text
         self.setFilename()
 
-
     def setPeriodID(self,text):
         self.period_id = text
         self.setFilename()
-
 
     def setLocation(self,text):
         self.location = text
         self.setFilename()
 
-
     def updateFilename(self,text):
         self.file_prefix = self.textbox.text()
-
 
     def setFilename(self):
         self.file_prefix = '{}_p{}_g{}'.format(self.location,
@@ -403,14 +384,12 @@ class App(QWidget):
                                                self.group_id)
         self.textbox.setText(self.file_prefix)
 
-
     def addSensor(self, sensor):
         self.initSensorData(sensor)
         self.setSensorTab(sensor)
         self.setSensorText(sensor)
         if not self.test_mode:
             self.startSensor(sensor)
-
 
     def setSensorTab(self, sensor):
         '''
@@ -439,7 +418,6 @@ class App(QWidget):
 
         self.setPlots(sensor,tablayout)
         itab.setLayout(tablayout)
-
 
     def setPlots(self,sensor,layout):
         '''
@@ -569,7 +547,6 @@ class App(QWidget):
             layout.addWidget(plotwin,1,0,1,8)
             layout.setRowStretch(1,15)
 
-
     def setSensorText(self, sensor):
         '''
         Set initial text/display above data graphs for the sensor
@@ -615,7 +592,6 @@ class App(QWidget):
 
         self.setDisplayText(sensor)
 
-
     def initSensorData(self,sensor):
         '''
         Initialize the relevant sensor data lists
@@ -634,7 +610,6 @@ class App(QWidget):
 
         if sensor==CO2:
             self.data[sensor] = [[],[]]
-
 
     def makeTestData(self,sensor):
         '''
@@ -660,7 +635,6 @@ class App(QWidget):
             data = [np.random.random(1)[0],0.05*np.random.random(1)[0]]
         return data
 
-
     def addData(self, sensor, data):
         '''
         Add newest data from the sensor to data lists
@@ -671,21 +645,8 @@ class App(QWidget):
             self.start_time = float(format(float(time.time()), '.2f'))
         itime = float(format(float(time.time()), '.2f')) - self.start_time
         self.time_data[sensor].append(itime)
-        if len(self.time_data[sensor]) > self.ndata:
-            self.time_data[sensor].pop(0)
-
-        if sensor==RAD:
-            data = np.asarray(data).reshape(self.nbins,int(len(data)/self.nbins)).sum(axis=1)
-            self.spectra.append(data)
-            self.data[sensor] += data
-            cps = np.sum(data)/float(self.integration_time)
-            err = np.sqrt(np.sum(data))/float(self.integration_time)
-            self.ave_data[0].append(cps)
-            self.ave_data[1].append(err)
-            if len(self.ave_data[0]) > self.ndata:
-                self.spectra.pop(0)
-                self.ave_data[0].pop(0)
-                self.ave_data[1].pop(0)
+        #if len(self.time_data[sensor]) > self.ndata:
+        #    self.time_data[sensor].pop(0)
 
         if sensor==PTH:
             self.data[PTH][0][0].append(data[0][0])
@@ -698,7 +659,7 @@ class App(QWidget):
             self.data[PTH][3][1].append(data[3][1])
             self.data[PTH][4][0].append(data[4][0])
             self.data[PTH][4][1].append(data[4][1])
-
+            '''
             if len(self.data[sensor][0][0]) > self.ndata:
                 self.data[sensor][0][0].pop(0)
                 self.data[sensor][0][1].pop(0)
@@ -710,6 +671,7 @@ class App(QWidget):
                 self.data[sensor][3][1].pop(0)
                 self.data[sensor][4][0].pop(0)
                 self.data[sensor][4][1].pop(0)
+                '''
 
         if sensor==AIR:
             self.data[AIR][0][0].append(data[0][0])
@@ -718,7 +680,7 @@ class App(QWidget):
             self.data[AIR][1][1].append(data[1][1])
             self.data[AIR][2][0].append(data[2][0])
             self.data[AIR][2][1].append(data[2][1])
-
+            '''
             if len(self.data[sensor][0][0]) > self.ndata:
                 self.data[sensor][0][0].pop(0)
                 self.data[sensor][0][1].pop(0)
@@ -726,93 +688,109 @@ class App(QWidget):
                 self.data[sensor][1][1].pop(0)
                 self.data[sensor][2][0].pop(0)
                 self.data[sensor][2][1].pop(0)
+                '''
+
+        if sensor==RAD:
+            data = np.asarray(data).reshape(self.nbins,int(len(data)/self.nbins)).sum(axis=1)
+            self.spectra.append(data)
+            self.data[sensor] += data
+            cps = np.sum(data)/float(self.integration_time)
+            err = np.sqrt(np.sum(data))/float(self.integration_time)
+            self.ave_data[0].append(cps)
+            self.ave_data[1].append(err)
+            '''
+            if len(self.ave_data[0]) > self.ndata:
+                self.spectra.pop(0)
+                self.ave_data[0].pop(0)
+                self.ave_data[1].pop(0)
+                '''
 
         if sensor==CO2:
             self.data[CO2][0].append(data[0])
             self.data[CO2][1].append(data[1])
-
+            '''
             if len(self.data[sensor][0]) > self.ndata:
                 self.data[sensor][0].pop(0)
                 self.data[sensor][1].pop(0)
-
+                '''
 
     def updatePlot(self, sensor):
         '''
         Update plots with newest data from the sensor
         '''
+        slice = -1*self.ndata
         if sensor==RAD:
             self.plot_list[sensor][0].setData(self.channels,
-                                              np.asarray(self.data[sensor]))
+                                              np.asarray(self.data[sensor][slice:]))
 
-            self.err_list[sensor].setData(x=np.asarray(self.time_data[sensor]),
-                                          y=np.asarray(self.ave_data[0]),
-                                          height=np.asarray(self.ave_data[1]),
+            self.err_list[sensor].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                          y=np.asarray(self.ave_data[0][slice:]),
+                                          height=np.asarray(self.ave_data[1][slice:]),
                                           beam=0.15)
-            self.plot_list[sensor][1].setData(self.time_data[sensor],
-                                              self.ave_data[0])
+            self.plot_list[sensor][1].setData(self.time_data[sensor][slice:],
+                                              self.ave_data[0][slice:])
 
         if sensor==PTH:
-            self.err_list[sensor][0].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][0][0])/np.mean(self.data[sensor][0][0]),
-                                             height=np.asarray(self.data[sensor][0][1])/np.mean(self.data[sensor][0][0]),
+            self.err_list[sensor][0].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                             y=np.asarray(self.data[sensor][0][0][slice:])/np.mean(self.data[sensor][0][0][slice:]),
+                                             height=np.asarray(self.data[sensor][0][1])/np.mean(self.data[sensor][0][0][slice:]),
                                              beam=0.15)
-            self.plot_list[sensor][0].setData(self.time_data[sensor],
-                                              np.asarray(self.data[sensor][0][0])/np.mean(self.data[sensor][0][0]))
-            self.err_list[sensor][1].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][1][0])/np.mean(self.data[sensor][1][0]),
-                                             height=np.asarray(self.data[sensor][1][1])/np.mean(self.data[sensor][1][0]),
+            self.plot_list[sensor][0].setData(self.time_data[sensor][slice:],
+                                              np.asarray(self.data[sensor][0][0][slice:])/np.mean(self.data[sensor][0][0][slice:]))
+            self.err_list[sensor][1].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                             y=np.asarray(self.data[sensor][1][0][slice:])/np.mean(self.data[sensor][1][0][slice:]),
+                                             height=np.asarray(self.data[sensor][1][1][slice:])/np.mean(self.data[sensor][1][0][slice:]),
                                              beam=0.15)
-            self.plot_list[sensor][1].setData(self.time_data[sensor],
-                                              np.asarray(self.data[sensor][1][0])/np.mean(self.data[sensor][1][0]))
-            self.err_list[sensor][2].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][2][0])/np.mean(self.data[sensor][2][0]),
-                                             height=np.asarray(self.data[sensor][2][1])/np.mean(self.data[sensor][2][0]),
+            self.plot_list[sensor][1].setData(self.time_data[sensor][slice:],
+                                              np.asarray(self.data[sensor][1][0][slice:])/np.mean(self.data[sensor][1][0][slice:]))
+            self.err_list[sensor][2].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                             y=np.asarray(self.data[sensor][2][0][slice:])/np.mean(self.data[sensor][2][0][slice:]),
+                                             height=np.asarray(self.data[sensor][2][1][slice:])/np.mean(self.data[sensor][2][0][slice:]),
                                              beam=0.15)
-            self.plot_list[sensor][2].setData(self.time_data[sensor],
-                                              np.asarray(self.data[sensor][2][0])/np.mean(self.data[sensor][2][0]))
-            self.err_list[sensor][3].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][3][0])/np.mean(self.data[sensor][3][0]),
-                                             height=np.asarray(self.data[sensor][3][1])/np.mean(self.data[sensor][3][0]),
+            self.plot_list[sensor][2].setData(self.time_data[sensor][slice:],
+                                              np.asarray(self.data[sensor][2][0][slice:])/np.mean(self.data[sensor][2][0][slice:]))
+            self.err_list[sensor][3].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                             y=np.asarray(self.data[sensor][3][0][slice:])/np.mean(self.data[sensor][3][0][slice:]),
+                                             height=np.asarray(self.data[sensor][3][1][slice:])/np.mean(self.data[sensor][3][0][slice:]),
                                              beam=0.15)
-            self.plot_list[sensor][3].setData(self.time_data[sensor],
-                                              np.asarray(self.data[sensor][3][0])/np.mean(self.data[sensor][3][0]))
-            self.err_list[sensor][4].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][4][0])/np.mean(self.data[sensor][4][0]),
-                                             height=np.asarray(self.data[sensor][4][1])/np.mean(self.data[sensor][4][0]),
+            self.plot_list[sensor][3].setData(self.time_data[sensor][slice:],
+                                              np.asarray(self.data[sensor][3][0][slice:])/np.mean(self.data[sensor][3][0][slice:]))
+            self.err_list[sensor][4].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                             y=np.asarray(self.data[sensor][4][0][slice:])/np.mean(self.data[sensor][4][0][slice:]),
+                                             height=np.asarray(self.data[sensor][4][1][slice:])/np.mean(self.data[sensor][4][0][slice:]),
                                              beam=0.15)
-            self.plot_list[sensor][4].setData(self.time_data[sensor],
-                                              np.asarray(self.data[sensor][4][0])/np.mean(self.data[sensor][4][0]))
+            self.plot_list[sensor][4].setData(self.time_data[sensor][slice:],
+                                              np.asarray(self.data[sensor][4][0][slice:])/np.mean(self.data[sensor][4][0][slice:]))
 
         if sensor==AIR:
-            self.err_list[sensor][0].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][0][0]),
-                                             height=np.asarray(self.data[sensor][0][1]),
+            self.err_list[sensor][0].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                             y=np.asarray(self.data[sensor][0][0][slice:]),
+                                             height=np.asarray(self.data[sensor][0][1][slice:]),
                                              beam=0.15)
-            self.plot_list[sensor][0].setData(self.time_data[sensor],
-                                              self.data[sensor][0][0])
-            self.err_list[sensor][1].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][1][0]),
-                                             height=np.asarray(self.data[sensor][1][1]),
+            self.plot_list[sensor][0].setData(self.time_data[sensor][slice:],
+                                              self.data[sensor][0][0][slice:])
+            self.err_list[sensor][1].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                             y=np.asarray(self.data[sensor][1][0][slice:]),
+                                             height=np.asarray(self.data[sensor][1][1][slice:]),
                                              beam=0.15)
-            self.plot_list[sensor][1].setData(self.time_data[sensor],
-                                              self.data[sensor][1][0])
-            self.err_list[sensor][2].setData(x=np.asarray(self.time_data[sensor]),
-                                             y=np.asarray(self.data[sensor][2][0]),
-                                             height=np.asarray(self.data[sensor][2][1]),
+            self.plot_list[sensor][1].setData(self.time_data[sensor][slice:],
+                                              self.data[sensor][1][0][slice:])
+            self.err_list[sensor][2].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                             y=np.asarray(self.data[sensor][2][0][slice:]),
+                                             height=np.asarray(self.data[sensor][2][1][slice:]),
                                              beam=0.15)
-            self.plot_list[sensor][2].setData(self.time_data[sensor],
-                                              self.data[sensor][2][0])
+            self.plot_list[sensor][2].setData(self.time_data[sensor][slice:],
+                                              self.data[sensor][2][0][slice:])
 
         if sensor==CO2:
-            self.err_list[sensor].setData(x=np.asarray(self.time_data[sensor]),
-                                          y=np.asarray(self.data[sensor][0]),
-                                          height=np.asarray(self.data[sensor][1]),
+            self.err_list[sensor].setData(x=np.asarray(self.time_data[sensor][slice:]),
+                                          y=np.asarray(self.data[sensor][0][slice:]),
+                                          height=np.asarray(self.data[sensor][1][slice:]),
                                           beam=0.15)
-            self.plot_list[sensor].setData(self.time_data[sensor],
-                                           self.data[sensor][0])
+            self.plot_list[sensor].setData(self.time_data[sensor][slice:],
+                                           self.data[sensor][0][slice:])
 
         self.updateText(sensor)
-
 
     def updateText(self, sensor):
         '''
@@ -912,6 +890,56 @@ class App(QWidget):
             else:
                 self.data_display[sensor].setStyleSheet(verybad_background)
 
+    def create_file(self, fname = None):
+        self.out_file = open(fname, "a",newline="")
+        self.results = csv.writer(self.out_file, delimiter = ",")
+        metadata = ["Time", "Latitude", "Longitude"]
+        for sensor in self.sensor_list:
+            if sensor==PTH:
+                metadata.append("Temperature")
+                metadata.append("Humidity")
+                metadata.append("Pressure")
+                metadata.append("Altitude")
+                metadata.append("VOC")
+            if sensor==AIR:
+                metadata.append("PM1")
+                metadata.append("PM25")
+                metadata.append("PM10")
+            if sensor==RAD:
+                metadata.append("counts")
+            if sensor==CO2:
+                metadata.append("ppm")
+        self.results.writerow(metadata)
+
+    def write_data(self):
+        data_row = [self.time_data['GPS'][-1], 
+                    self.data['GPS'][0][-1],
+                    self.data['GPS'][1][-1]]
+        for sensor in self.sensor_list:
+            if sensor==PTH:
+                data_row.append(self.data[PTH][0][0][-1])
+                data_row.append(self.data[PTH][1][0][-1])
+                data_row.append(self.data[PTH][2][0][-1])
+                data_row.append(self.data[PTH][3][0][-1])
+                data_row.append(self.data[PTH][4][0][-1])
+            if sensor==AIR:
+                data_row.append(self.data[AIR][0][0][-1])
+                data_row.append(self.data[AIR][1][0][-1])
+                data_row.append(self.data[AIR][2][0][-1])
+            if sensor==RAD:
+                data_row.append(self.ave_data[0][-1])
+            if sensor==CO2:
+                data_row.append(self.data[CO2][0][-1])
+        self.results.writerow(data_row)
+
+    def close_file(self):
+        self.out_file.close()
+        print("Copying data from {} to server.".format(self.out_file.name))
+        sys_cmd = 'scp {} pi@192.168.4.1:/home/pi/data/'.format(
+                                self.out_file.name)
+        err = os.system(sys_cmd)
+        print("system command returned {}".format(err))
+        sys.stdout.flush()
 
     @pyqtSlot()
     def updatePlots(self):
@@ -921,14 +949,22 @@ class App(QWidget):
                 self.addData(sensor,data)
                 self.updatePlot(sensor)
         else:
+            got_gps = False
             message = receive_queue_data()
             while message is not None:
+                if message['id']=='GPS':
+                    got_gps = True
                 self.addData(message['id'],message['data'])
                 self.updatePlot(message['id'])
                 message = receive_queue_data()
+            if not got_gps:
+                self.addData('GPS',[0,0])
+            if self.saveData:
+                self.write_data()
 
     @pyqtSlot()
     def run(self):
+        self.startSensor('GPS')
         time_sample = 50
         if self.test_mode:
             time_sample = 1000*self.integration_time
@@ -936,6 +972,12 @@ class App(QWidget):
         # Only set start time the first time user clicks start
         if self.start_time is None:
             self.start_time = float(format(float(time.time()), '.2f'))
+        if self.saveData:
+            tempfileheader = time.strftime('%Y-%m-%d_%H-%M-%S_', 
+                                            time.localtime())
+            fname = "/home/pi/data/" + self.file_prefix + '_' + \
+                    tempfileheader + '.csv'
+            self.create_file(fname)
         if not self.test_mode:
             send_queue_cmd('START',self.sensor_list)
         self.timer = QtCore.QTimer()
@@ -951,14 +993,14 @@ class App(QWidget):
         if not self.test_mode:
             send_queue_cmd('STOP',self.sensor_list)
         self.timer.stop()
+        if self.saveData:
+            self.close_file()
 
     @pyqtSlot()
     def clear(self):
         '''
         Send STOP command to all sensors and clear current data
         '''
-        # TODO: Automaticaly save data to file here and/or add 'Save' button?
-        #    - maybe produce a pop-up prompting user to chose to save or not
         try:
             if not self.test_mode:
                 send_queue_cmd('STOP',self.sensor_list)
