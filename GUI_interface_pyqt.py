@@ -296,11 +296,11 @@ class App(QWidget):
                 lambda:self.setGroupID(str(self.group_box.currentText())))
         self.config_layout.addRow(self.group_text,self.group_box)
 
-        self.ptext = QLabel("Period:")
+        self.ptext = QLabel("Session:")
         self.ptext.setFont(textfont)
         self.ptext.setAlignment(Qt.AlignCenter)
         self.pbox = QComboBox()
-        item_list = ["1","2","3","4","5","6","7","8"]
+        item_list = ["1","2","3","4","5","6","7","8","9","10"]
         self.period_id = "1"
         self.pbox.addItems(item_list)
         self.pbox.currentIndexChanged.connect(
@@ -311,8 +311,8 @@ class App(QWidget):
         self.location_text.setFont(textfont)
         self.location_text.setAlignment(Qt.AlignCenter)
         self.location_box = QComboBox()
-        item_list = ["Inside","Outside","Test_1","Test_2","Test_3"]
-        self.location = "Inside"
+        item_list = ["Loc1","Loc2","Loc3","Loc4","Loc5"]
+        self.location = "Location_1"
         self.location_box.addItems(item_list)
         self.location_box.currentIndexChanged.connect(
                 lambda:self.setLocation(str(self.location_box.currentText())))
@@ -375,9 +375,9 @@ class App(QWidget):
         self.file_prefix = self.textbox.text()
 
     def setFilename(self):
-        self.file_prefix = '{}_p{}_g{}'.format(self.location,
-                                               self.period_id,
-                                               self.group_id)
+        self.file_prefix = '{}_session{}_group{}'.format(self.location,
+                                                         self.period_id,
+                                                         self.group_id)
         self.textbox.setText(self.file_prefix)
 
     def addSensor(self, sensor):
@@ -645,7 +645,9 @@ class App(QWidget):
         self.time_data[sensor].append(itime)
         #if len(self.time_data[sensor]) > self.ndata:
         #    self.time_data[sensor].pop(0)
-
+        if sensor=="GPS":
+            self.data["GPS"][0].append(data[0])
+            self.data["GPS"][1].append(data[1])
         if sensor==PTH:
             self.data[PTH][0][0].append(data[0][0])
             self.data[PTH][0][1].append(data[0][1])
@@ -972,7 +974,7 @@ class App(QWidget):
         if self.start_time is None:
             self.start_time = float(format(float(time.time()), '.2f'))
         if self.saveData:
-            tempfileheader = time.strftime('%Y-%m-%d_%H-%M-%S_', 
+            tempfileheader = time.strftime('%Y-%m-%d_%H-%M-%S', 
                                             time.localtime())
             fname = "/home/pi/data/" + self.file_prefix + '_' + \
                     tempfileheader + '.csv'
@@ -1006,6 +1008,8 @@ class App(QWidget):
             self.start_time = None
             for sensor in self.sensor_list:
                 self.time_data[sensor][:] = []
+                if sensor=='GPS':
+                    self.data['GPS'] = [[],[]]
                 if sensor==RAD:
                     self.spectra[:] = []
                     self.data[sensor] = np.ones(self.nbins, dtype=float)
