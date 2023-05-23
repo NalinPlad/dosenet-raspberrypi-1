@@ -958,7 +958,7 @@ class App(QWidget):
                     got_gps = True
                     print("Got GPS data")
                 self.addData(message['id'],message['data'])
-                if message['id']!='GPS'
+                if message['id']!='GPS':
                     self.updatePlot(message['id'])
                 message = receive_queue_data()
             if got_gps and self.saveData:
