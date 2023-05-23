@@ -25,7 +25,9 @@ from PyQt5.QtWidgets import QCheckBox
 from pyqtgraph import QtGui
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSlot, Qt
-from PyQt5.QtGui import QPalette, QFont, QTabWidget, QTabBar, QComboBox
+from PyQt5.QtGui import QPalette, QFont, QComboBox
+#from PyQt5.QtGui import QTabWidget, QTabBar
+from PyQt5.QtWidgets import QTabWidget, QTabBar
 from PyQt5.QtGui import QStyleFactory
 
 import pyqtgraph as pg
