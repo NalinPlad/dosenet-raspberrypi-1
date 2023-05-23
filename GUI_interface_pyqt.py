@@ -113,7 +113,6 @@ class App(QWidget):
         self.initLayout()
         self.setLayout(self.layout)
 
-
     def initLayout(self):
         # Create Grid layout
         self.layout = QGridLayout()
@@ -160,7 +159,6 @@ class App(QWidget):
         self.addButton('Stop',self.stop,ptop+9,pleft+pwidth+1,1,1,"#FF6666")
         self.addButton('Clear',self.clear,ptop+10,pleft+pwidth+1,1,1,"#E0E0E0")
 
-
     def addButton(self,label,method,top,left,height,width,color="white"):
         '''
         Add a button to the main layout
@@ -184,7 +182,6 @@ class App(QWidget):
         button.clicked.connect(method)
         self.layout.addWidget(button,top,left,height,width,Qt.AlignHCenter)
 
-
     def addCheckBox(self, label, top, left):
         '''
         Add a checkbox to the main layout in the specified location (top,left)
@@ -205,12 +202,11 @@ class App(QWidget):
         if not self.test_mode:
             self.kill_sensor(sensor)
 
-
     def startSensor(self, sensor):
         if sensor=='GPS':
             py = 'python3'
             script = 'updated_gps/gps_daq.py'
-            log = 'gps_log'
+            log = 'gps_gui.log'
         if sensor==PTH:
             py = 'python3'
             script = 'weather_rabbitmq_DAQ.py'
@@ -597,6 +593,8 @@ class App(QWidget):
         Initialize the relevant sensor data lists
         '''
         self.time_data[sensor] = []
+        if sensor=='GPS':
+            self.data['GPS'] = [[],[]]
         if sensor==RAD:
             self.data[sensor] = np.ones(self.nbins, dtype=float)
             self.spectra = []
@@ -964,6 +962,7 @@ class App(QWidget):
 
     @pyqtSlot()
     def run(self):
+        self.initSensorData('GPS')
         self.startSensor('GPS')
         time_sample = 50
         if self.test_mode:

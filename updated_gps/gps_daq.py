@@ -49,7 +49,7 @@ def receive(ID, queue):
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--interval", "-i", type=int, default=1)
-	parser.add_argement("--test", "-t", action="store_true", default=False)
+	parser.add_argument("--test", "-t", action="store_true", default=False)
 
 	args = parser.parse_args()
 	arg_dict = vars(args)
@@ -96,6 +96,7 @@ if __name__ == '__main__':
 			lat = gps.latitude
 			lon = gps.longitude
 			if not arg_dict.test:
+				print("GPS: ",[lat,lon])
 				send_data([lat, lon])
 
 			print("Latitude: {0:.6f} degrees".format(lat))
