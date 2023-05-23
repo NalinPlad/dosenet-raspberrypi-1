@@ -75,7 +75,7 @@ if __name__ == '__main__':
 		
 		lat, lon = 0, 0
 		
-		if not arg_dict.test:
+		if not arg_dict['test']:
 			command = receive('GPS', 'fromGUI')
 
 			if command == 'EXIT':
