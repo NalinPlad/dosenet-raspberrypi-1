@@ -559,12 +559,12 @@ class App(QWidget):
             else:
                 temp = "{:.1f}".format(np.mean(self.data[sensor][0]))
                 hum = "{:.1f}".format(np.mean(self.data[sensor][1]))
-                press = "{:.1f}".format(np.mean(self.data[sensor][2]))
+                press = "{:.1f}".format(np.mean(self.data[sensor][2])/1000.)
                 alt = "{:.1f}".format(np.mean(self.data[sensor][3]))
                 gas = "{:.1f}".format(np.mean(self.data[sensor][4]))
             sensor_text = ["T =",temp,
                            "°C, H =",hum,
-                           "%, P =",press/1000.,
+                           "%, P =",press,
                            " atm, Alt. = ",alt,
                            " m, VOC = ",gas]
             self.sensor_list[sensor] = sensor_text
@@ -956,7 +956,8 @@ class App(QWidget):
                     got_gps = True
                     print("Got GPS data")
                 self.addData(message['id'],message['data'])
-                self.updatePlot(message['id'])
+                if message['id']!='GPS'
+                    self.updatePlot(message['id'])
                 message = receive_queue_data()
             if got_gps and self.saveData:
                 self.write_data()
