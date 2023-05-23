@@ -934,11 +934,13 @@ class App(QWidget):
 
     def close_file(self):
         self.out_file.close()
+        '''
         print("Copying data from {} to server.".format(self.out_file.name))
         sys_cmd = 'scp {} pi@192.168.4.1:/home/pi/data/'.format(
                                 self.out_file.name)
         err = os.system(sys_cmd)
         print("system command returned {}".format(err))
+        '''
         sys.stdout.flush()
 
     @pyqtSlot()
