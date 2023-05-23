@@ -17,6 +17,7 @@ import json
 import atexit
 import traceback
 import argparse
+import pika
 
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton
 from PyQt5.QtWidgets import QAction, QLineEdit, QMessageBox, QLabel
@@ -75,8 +76,10 @@ class App(QWidget):
         self.title = 'DoseNet Sensor GUI'
         self.left = 0
         self.test_mode = test
+        print("test mode = ",test)
         self.windows = windows
         if not self.test_mode:
+            print("importing non-test-mode libraries")
             import pika
 
         if windows:
@@ -85,7 +88,7 @@ class App(QWidget):
             self.height = 720
 
         else:
-            self.top = 20
+            self.top = 60
             self.width = 800
             self.height = 440
 
@@ -115,7 +118,7 @@ class App(QWidget):
         # Create Grid layout
         self.layout = QGridLayout()
         #self.layout.setSpacing(0.01)
-        self.layout.setContentsMargins(0.,0.,0.,0.)
+        self.layout.setContentsMargins(0,0,0,0)
 
         # Create main plotting area
         self.tabs = QTabWidget(self)
@@ -208,7 +211,7 @@ class App(QWidget):
                 str(dt.datetime.today()).split()[0]
         if sensor==PTH:
             py = 'python3'
-            script = 'weather_DAQ_rabbitmq.py'
+            script = 'weather_rabbitmq_DAQ.py'
             log = 'weather_gui.log'
             if self.saveData:
                 fname = fname + "_PTH.csv"
@@ -231,7 +234,7 @@ class App(QWidget):
             if self.saveData:
                 fname = fname + "_CO2.csv"
 
-        cmd_head = '{} /home/pi/pyqt-gui/dosenet-raspberrypi/{}'.format(py, script)
+        cmd_head = '{} /home/pi/dosenet-raspberrypi-1/{}'.format(py, script)
         cmd_options = ' -i {}'.format(self.integration_time)
         if self.saveData:
             cmd_options = cmd_options + ' -d {}'.format(fname)
@@ -265,7 +268,7 @@ class App(QWidget):
         self.selection_tab = QWidget()
         self.tabs.addTab(self.selection_tab, "Configure")
         self.config_layout = QFormLayout()
-        self.config_layout.setContentsMargins(30.,50.,30.,20.)
+        self.config_layout.setContentsMargins(30,50,30,20)
         integration_text = QLabel("Integration time (sec):")
         textfont = QFont("Times", 16, QFont.Bold)
         integration_text.setFont(textfont)
@@ -422,8 +425,8 @@ class App(QWidget):
         index = self.tabs.addTab(itab, sensor)
         self.sensor_tab[sensor] = [index,itab]
         tablayout = QGridLayout()
-        tablayout.setSpacing(0.)
-        tablayout.setContentsMargins(0.,0.,0.,0.)
+        tablayout.setSpacing(0)
+        tablayout.setContentsMargins(0,0,0,0)
 
         # Create value display
         self.data_display[sensor] = QLabel("")
@@ -444,7 +447,7 @@ class App(QWidget):
         '''
         if sensor==RAD:
             global proxy
-            splotwin = pg.GraphicsWindow()
+            splotwin = pg.GraphicsLayoutWidget()
             splotwin.setContentsMargins(0,0,0,0)
             self.cursor_label = pg.LabelItem(justify='right')
             splotwin.addItem(self.cursor_label)
@@ -463,14 +466,14 @@ class App(QWidget):
             proxy = pg.SignalProxy(self.splot.scene().sigMouseMoved,
                                    rateLimit=60,
                                    slot=mouseMoved)
-            tplotwin = pg.GraphicsWindow()
+            tplotwin = pg.GraphicsLayoutWidget()
             tplotwin.setContentsMargins(0,0,0,0)
             tplot = tplotwin.addPlot()
             tplot.showGrid(x=True, y=True)
             tplot.setLabel('left', '<h3>CPS</h3>')
             tplot.setLabel('bottom', '<h3>Time</h3>')
-            err = pg.ErrorBarItem(x=self.time_data[sensor],
-								  y=self.ave_data[0],
+            err = pg.ErrorBarItem(x=np.asarray(self.time_data[sensor]),
+								  y=np.asarray(self.ave_data[0]),
                                   height=np.asarray(self.ave_data[1]))
             tplot.addItem(err)
             curve2 = tplot.plot(symbolBrush=(255,0,0), symbolPen='k',
@@ -483,29 +486,29 @@ class App(QWidget):
             layout.setRowStretch(2,5)
 
         if sensor==AIR:
-            plotwin = pg.GraphicsWindow()
+            plotwin = pg.GraphicsLayoutWidget()
             plotwin.setContentsMargins(0,0,0,0)
             iplot = plotwin.addPlot()
             iplot.showGrid(x=True, y=True)
             legend = pg.LegendItem(size=(110,90), offset=(100,10))
             legend.setParentItem(iplot)
-            iplot.setLabel('left', '<h2>Particulate Concentration</h2>')
-            iplot.setLabel('bottom', '<h2>Time</h2>')
+            iplot.setLabel('left', '<h3>Parts-per-million</h3>')
+            iplot.setLabel('bottom', '<h3>Time</h3>')
             colors = [(255,0,0),(0,255,0),(0,0,255)]
-            names = ['<h4>PM 1.0</h4>',
-                     '<h4>PM 2.5</h4>',
-                     '<h4>PM 10</h4>']
+            names = ['PM 1.0',
+                     'PM 2.5',
+                     'PM 10']
 
             self.plot_list[sensor] = []
             self.err_list[sensor] = []
             for idx in range(len(self.data[sensor])):
-                err = pg.ErrorBarItem(x=self.time_data[sensor],
-									  y=self.data[sensor][idx][0],
+                err = pg.ErrorBarItem(x=np.asarray(self.time_data[sensor]),
+									  y=np.asarray(self.data[sensor][idx][0]),
 									  height=np.asarray(
                                                 self.data[sensor][idx][1]))
                 iplot.addItem(err)
-                curve = iplot.plot(self.time_data[sensor],
-                                   self.data[sensor][idx][0],
+                curve = iplot.plot(np.asarray(self.time_data[sensor]),
+                                   np.asarray(self.data[sensor][idx][0]),
                                    symbolBrush=colors[idx], symbolPen='k',
                                    pen=colors[idx], name=names[idx])
                 self.err_list[sensor].append(err)
@@ -515,33 +518,33 @@ class App(QWidget):
             layout.setRowStretch(1,15)
 
         if sensor==PTH:
-            plotwin = pg.GraphicsWindow()
+            plotwin = pg.GraphicsLayoutWidget()
             plotwin.setContentsMargins(0,0,0,0)
             iplot = plotwin.addPlot()
             iplot.showGrid(x=True, y=True)
-            legend = pg.LegendItem(size=(110,90), offset=(100,10))
+            legend = pg.LegendItem(size=(100,90), offset=(100,5), pen='k', brush=(211,211,211))
             legend.setParentItem(iplot)
-            iplot.setLabel('left', '<h2>P/T/H/Alt./VOC</h2>')
-            iplot.setLabel('bottom', '<h2>Time</h2>')
+            iplot.setLabel('left', '<h3>Value/Average</h3>')
+            iplot.setLabel('bottom', '<h3>Time</h3>')
             colors = [(255,0,0),(0,255,0),(0,0,255),(255,255,0),(0,255,255)]
-            names = ['<h4>T/T_ave</h4>',
-                     '<h4>H/H_ave</h4>',
-                     '<h4>P/P_ave</h4>',
-                     '<h4>Alt./Alt_ave</h4>',
-                     '<h4>VOC/VOC_ave</h4>']
+            names = ['Temp',
+                     'Hum',
+                     'P',
+                     'Alt.',
+                     'VOC']
 
             self.plot_list[sensor] = []
             self.err_list[sensor] = []
             for idx in range(len(self.data[sensor])):
-                err = pg.ErrorBarItem(x=self.time_data[sensor],
-                                      y=self.data[sensor][idx][0],
+                err = pg.ErrorBarItem(x=np.asarray(self.time_data[sensor]),
+                                      y=np.asarray(self.data[sensor][idx][0]),
                                       height=np.asarray(
                                                 self.data[sensor][idx][1]))
                 iplot.addItem(err)
-                curve = iplot.plot(self.time_data[sensor],
-                                   self.data[sensor][idx][0],
+                curve = iplot.plot(np.asarray(self.time_data[sensor]),
+                                   np.asarray(self.data[sensor][idx][0]),
                                    symbolBrush=colors[idx], symbolPen='k',
-                                   pen=colors[idx], name=names[idx])
+                                   pen=colors[idx], symbol='o', name=names[idx])
                 self.err_list[sensor].append(err)
                 self.plot_list[sensor].append(curve)
                 legend.addItem(curve,names[idx])
@@ -549,14 +552,14 @@ class App(QWidget):
             layout.setRowStretch(1,15)
 
         if sensor==CO2:
-            plotwin = pg.GraphicsWindow()
+            plotwin = pg.GraphicsLayoutWidget()
             plotwin.setContentsMargins(0,0,0,0)
             iplot = plotwin.addPlot()
             iplot.showGrid(x=True, y=True)
             iplot.setLabel('left','<h2>CO<sub>2</sub> Concentration (ppm)</h2>')
             iplot.setLabel('bottom','<h2>Time</h2>')
-            err = pg.ErrorBarItem(x=self.time_data[sensor],
-                                  y=self.data[sensor][0],
+            err = pg.ErrorBarItem(x=np.asarray(self.time_data[sensor]),
+                                  y=np.asarray(self.data[sensor][0]),
                                   height=np.asarray(self.data[sensor][1]))
             iplot.addItem(err)
             curve = iplot.plot(symbolBrush=(255,0,0), symbolPen='k',

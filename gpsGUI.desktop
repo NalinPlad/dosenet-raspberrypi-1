@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=gpsGUI
+Name=Mapping
 Comment=Runs the environmental sensor GUI interface
 Icon=/home/pi/dosenet-raspberrypi-1/GUI_icon.png
 Exec=python3 /home/pi/dosenet-raspberrypi-1/updated_gps/GUI.py
