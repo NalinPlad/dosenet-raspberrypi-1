@@ -90,7 +90,7 @@ if __name__ == '__main__':
 			if not gps.has_fix:
 				# Try again if we don't have a fix yet.
 				print("Waiting for fix...")
-				continue
+				lat, lon = 0, 0
 			# We have a fix! (gps.has_fix is true)
 			# Print out details about the fix like location, date, etc.
 			lat = gps.latitude

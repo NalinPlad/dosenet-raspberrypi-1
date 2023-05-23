@@ -312,7 +312,7 @@ class App(QWidget):
         self.location_text.setAlignment(Qt.AlignCenter)
         self.location_box = QComboBox()
         item_list = ["Loc1","Loc2","Loc3","Loc4","Loc5"]
-        self.location = "Location_1"
+        self.location = "Loc1"
         self.location_box.addItems(item_list)
         self.location_box.currentIndexChanged.connect(
                 lambda:self.setLocation(str(self.location_box.currentText())))
@@ -733,7 +733,7 @@ class App(QWidget):
         if sensor==PTH:
             self.err_list[sensor][0].setData(x=np.asarray(self.time_data[sensor][slice:]),
                                              y=np.asarray(self.data[sensor][0][0][slice:])/np.mean(self.data[sensor][0][0][slice:]),
-                                             height=np.asarray(self.data[sensor][0][1])/np.mean(self.data[sensor][0][0][slice:]),
+                                             height=np.asarray(self.data[sensor][0][1][slice:])/np.mean(self.data[sensor][0][0][slice:]),
                                              beam=0.15)
             self.plot_list[sensor][0].setData(self.time_data[sensor][slice:],
                                               np.asarray(self.data[sensor][0][0][slice:])/np.mean(self.data[sensor][0][0][slice:]))
@@ -954,6 +954,7 @@ class App(QWidget):
             while message is not None:
                 if message['id']=='GPS':
                     got_gps = True
+                    print("Got GPS data")
                 self.addData(message['id'],message['data'])
                 self.updatePlot(message['id'])
                 message = receive_queue_data()
