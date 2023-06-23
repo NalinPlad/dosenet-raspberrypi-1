@@ -562,11 +562,11 @@ class App(QWidget):
                 press = "{:.1f}".format(np.mean(self.data[sensor][2])/1000.)
                 alt = "{:.1f}".format(np.mean(self.data[sensor][3]))
                 gas = "{:.1f}".format(np.mean(self.data[sensor][4]))
-            sensor_text = ["T =",temp,
-                           "°C, H =",hum,
-                           "%, P =",press,
-                           " atm, Alt. = ",alt,
-                           " m, VOC = ",gas]
+            sensor_text = ["T=",temp,
+                           "°C, H=",hum,
+                           "%, P=",press,
+                           "atm, Alt.=",alt,
+                           "m, VOC=",gas]
             self.sensor_list[sensor] = sensor_text
 
         if sensor==AIR:
@@ -724,7 +724,7 @@ class App(QWidget):
         slice = -1*self.ndata
         if sensor==RAD:
             self.plot_list[sensor][0].setData(self.channels,
-                                              np.asarray(self.data[sensor][slice:]))
+                                              np.asarray(self.data[sensor]))
 
             self.err_list[sensor].setData(x=np.asarray(self.time_data[sensor][slice:]),
                                           y=np.asarray(self.ave_data[0][slice:]),
@@ -910,6 +910,10 @@ class App(QWidget):
                 metadata.append("PM10")
             if sensor==RAD:
                 metadata.append("counts")
+                spec_name = 'Spectrum_' + fname
+                self.spectrum_file = open(spec_name, "a", newline="")
+                self.spectrum_results = csv.writer(self.spectrum_file, delimiter = ",")
+                self.spectrum_results.writerow(['Timestamp'] + list(range(0,self.nbins)))
             if sensor==CO2:
                 metadata.append("ppm")
         self.results.writerow(metadata)
@@ -931,12 +935,17 @@ class App(QWidget):
                 data_row.append(self.data[AIR][2][0][-1])
             if sensor==RAD:
                 data_row.append(self.ave_data[0][-1])
+                self.spectrum_results.writerow([self.time_data['GPS'][-1]]+self.data[RAD])
+                self.spectrum_results.flush()
             if sensor==CO2:
                 data_row.append(self.data[CO2][0][-1])
         self.results.writerow(data_row)
+        self.results.flush()
 
     def close_file(self):
         self.out_file.close()
+        if (RAD in self.sensor_list):
+            self.spectrum_file.close()
         '''
         print("Copying data from {} to server.".format(self.out_file.name))
         sys_cmd = 'scp {} pi@192.168.4.1:/home/pi/data/'.format(
