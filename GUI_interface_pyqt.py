@@ -915,9 +915,11 @@ class App(QWidget):
                 self.spectrum_file = open(spec_name, "a", newline="")
                 self.spectrum_results = csv.writer(self.spectrum_file, delimiter = ",")
                 self.spectrum_results.writerow(['Timestamp'] + list(range(0,self.nbins)))
+                self.spectrum_file.flush()
             if sensor==CO2:
                 metadata.append("ppm")
         self.results.writerow(metadata)
+        self.out_file.flush()
 
     def write_data(self):
         data_row = [self.time_data['GPS'][-1], 
@@ -937,11 +939,11 @@ class App(QWidget):
             if sensor==RAD:
                 data_row.append(self.ave_data[0][-1])
                 self.spectrum_results.writerow([self.time_data['GPS'][-1]]+self.data[RAD])
-                self.spectrum_results.flush()
+                self.spectrum_file.flush()
             if sensor==CO2:
                 data_row.append(self.data[CO2][0][-1])
         self.results.writerow(data_row)
-        self.results.flush()
+        self.out_file.flush()
 
     def close_file(self):
         self.out_file.close()
