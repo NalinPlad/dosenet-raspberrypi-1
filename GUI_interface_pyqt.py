@@ -894,7 +894,8 @@ class App(QWidget):
                 self.data_display[sensor].setStyleSheet(verybad_background)
 
     def create_file(self, fname = None):
-        self.out_file = open(fname, "a",newline="")
+        file_name = self.file_path + fname
+        self.out_file = open(file_name, "a",newline="")
         self.results = csv.writer(self.out_file, delimiter = ",")
         metadata = ["Time", "Latitude", "Longitude"]
         for sensor in self.sensor_list:
@@ -910,7 +911,7 @@ class App(QWidget):
                 metadata.append("PM10")
             if sensor==RAD:
                 metadata.append("counts")
-                spec_name = 'Spectrum_' + fname
+                spec_name = self.file_path + 'Spectrum_' + fname
                 self.spectrum_file = open(spec_name, "a", newline="")
                 self.spectrum_results = csv.writer(self.spectrum_file, delimiter = ",")
                 self.spectrum_results.writerow(['Timestamp'] + list(range(0,self.nbins)))
@@ -989,7 +990,8 @@ class App(QWidget):
         if self.saveData:
             tempfileheader = time.strftime('%Y-%m-%d_%H-%M-%S', 
                                             time.localtime())
-            fname = "/home/pi/data/" + self.file_prefix + '_' + \
+            self.file_path = "/home/pi/data/"
+            fname = self.file_prefix + '_' + \
                     tempfileheader + '.csv'
             self.create_file(fname)
         if not self.test_mode:
