@@ -1134,7 +1134,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     arg_dict = vars(args)
 
-    global ex
+    # global ex
     # Wrap everything in try/except so that sensor DAQs can be shutdown cleanly
     try:
         if not arg_dict['test']:
