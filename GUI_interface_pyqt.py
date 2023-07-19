@@ -281,9 +281,11 @@ class App(QWidget):
 
         checkbox = QCheckBox("Save Data")
         checkbox.setFont(QFont("Times", 18, QFont.Bold))
-        checkbox.setChecked(True)
+        checkbox.setChecked(False)
         checkbox.stateChanged.connect(lambda:self.setSaveData(checkbox))
         self.config_layout.addWidget(checkbox)
+
+        self.setSaveData(checkbox)
 
         self.group_text = QLabel("Group Number:")
         self.group_text.setFont(textfont)
@@ -352,8 +354,6 @@ class App(QWidget):
             self.location_text.close()
             self.location_box.close()
             self.textbox.close()
-
-    setSaveData()
 
     def setIntegrationTime(self,text):
         self.integration_time = int(text)
