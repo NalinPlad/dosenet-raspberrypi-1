@@ -447,7 +447,7 @@ class App(QWidget):
             tplot.setLabel('left', '<h3>CPS</h3>')
             tplot.setLabel('bottom', '<h3>Time</h3>')
             err = pg.ErrorBarItem(x=np.asarray(self.time_data[sensor]),
-								  y=np.asarray(self.ave_data[0]),
+                                  y=np.asarray(self.ave_data[0]),
                                   height=np.asarray(self.ave_data[1]))
             tplot.addItem(err)
             curve2 = tplot.plot(symbolBrush=(255,0,0), symbolPen='k',
@@ -477,8 +477,8 @@ class App(QWidget):
             self.err_list[sensor] = []
             for idx in range(len(self.data[sensor])):
                 err = pg.ErrorBarItem(x=np.asarray(self.time_data[sensor]),
-									  y=np.asarray(self.data[sensor][idx][0]),
-									  height=np.asarray(
+                                      y=np.asarray(self.data[sensor][idx][0]),
+                                      height=np.asarray(
                                                 self.data[sensor][idx][1]))
                 iplot.addItem(err)
                 curve = iplot.plot(np.asarray(self.time_data[sensor]),

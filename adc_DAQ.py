@@ -35,15 +35,15 @@ class adc_DAQ(object):
         print('N MERGE: {}'.format(n_merge) )
 
     def create_file(self):
-    	import csv
+        import csv
         global adc_file
         global adc_results
         file_time= time.strftime("%Y-%m-%d_%H-%M-%S", time.gmtime())
         id_info = []
         with open ('/home/pi/config/server_config.csv') as f:
-        	reader = csv.reader(f)
-        	for row in reader:
-        		id_info.append(row)
+            reader = csv.reader(f)
+            for row in reader:
+                id_info.append(row)
         filename = "/home/pi/data/"+"_".join(row)+"_CO2"+file_time+".csv"
         adc_file = open(filename, "ab+")
         adc_results=csv.writer(adc_file, delimiter = ",")
@@ -139,21 +139,21 @@ class adc_DAQ(object):
     def add_data(self, queue,queue_error, temp_list, data):
         temp_list.append(data)
         if len(temp_list)>=self.n_merge:
-        	temp_list = np.asarray(temp_list)
-        	print(temp_list)
-        	pre_mean = np.mean(temp_list)
-        	pre_sd = np.std(temp_list)
-        	print(pre_mean,pre_sd)
-        	while pre_sd > 15.0:
-        		temp_list = temp_list[np.logical_and(temp_list<(pre_mean+pre_sd), temp_list>(pre_mean-pre_sd))]
-        		print(temp_list)
-        		pre_mean = np.mean(temp_list)
-        		pre_sd = np.std(temp_list)
-        		print(pre_mean,pre_sd)
+            temp_list = np.asarray(temp_list)
+            print(temp_list)
+            pre_mean = np.mean(temp_list)
+            pre_sd = np.std(temp_list)
+            print(pre_mean,pre_sd)
+            while pre_sd > 15.0:
+                temp_list = temp_list[np.logical_and(temp_list<(pre_mean+pre_sd), temp_list>(pre_mean-pre_sd))]
+                print(temp_list)
+                pre_mean = np.mean(temp_list)
+                pre_sd = np.std(temp_list)
+                print(pre_mean,pre_sd)
 
-        	queue.append(np.mean(temp_list))
-        	queue_error.append(np.std(temp_list))
-        	#print(queue)
+            queue.append(np.mean(temp_list))
+            queue_error.append(np.std(temp_list))
+            #print(queue)
         # print(temp_list)
         # print('MEAN:{}'.format(np.mean(np.asarray(temp_list))))
         if len(queue)>self.maxdata:
@@ -181,29 +181,29 @@ class adc_DAQ(object):
         if display <= 400:
             ax1.text(0.5, 1.2,display_text, fontsize = 14 , ha = "center", backgroundcolor = "lightgreen")
             if sd<25:
-            	ax2.set_ylim(mean-100,mean+100)
+                ax2.set_ylim(mean-100,mean+100)
             else:
-            	ax2.set_ylim(mean-4*sd,mean+4*sd)
+                ax2.set_ylim(mean-4*sd,mean+4*sd)
 
         elif display > 400 and display <= 600:
             ax1.text(0.5, 1.2,display_text, fontsize = 14, ha = "center", backgroundcolor = "yellow")
             if sd<25:
-            	ax2.set_ylim(mean-100,mean+100)
+                ax2.set_ylim(mean-100,mean+100)
             else:
-            	ax2.set_ylim(mean-4*sd,mean+4*sd)
+                ax2.set_ylim(mean-4*sd,mean+4*sd)
         elif display > 600 and display <= 1000:
             ax1.text(0.5, 1.2,display_text, fontsize = 14, ha = "center", backgroundcolor = "orange")
             if sd<25:
-            	ax2.set_ylim(mean-100,mean+100)
+                ax2.set_ylim(mean-100,mean+100)
             else:
-            	ax2.set_ylim(mean-4*sd,mean+4*sd)
+                ax2.set_ylim(mean-4*sd,mean+4*sd)
 
         elif display > 1000:
             ax1.text(0.5, 1.2,display_text, fontsize = 14, ha = "center" , backgroundcolor = "red")
             if sd<25:
-            	ax2.set_ylim(mean-100,mean+100)
+                ax2.set_ylim(mean-100,mean+100)
             else:
-            	ax2.set_ylim(mean-4*sd,mean+4*sd)
+                ax2.set_ylim(mean-4*sd,mean+4*sd)
 
 
 

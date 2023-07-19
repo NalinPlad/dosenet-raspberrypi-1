@@ -28,14 +28,14 @@ class pocket_geiger_DAQ(object):
         print('N MERGE: {}'.format(n_merge) )
 
     def create_file(self):
-    	import csv
+        import csv
         global results
         file_time= time.strftime("%Y-%m-%d_%H-%M-%S", time.gmtime())
         id_info = []
         with open ('/home/pi/config/server_config.csv') as f:
-        	reader = csv.reader(f)
-        	for row in reader:
-        		id_info.append(row)
+            reader = csv.reader(f)
+            for row in reader:
+                id_info.append(row)
         filename = "/home/pi/data/"+"_".join(row)+"_geiger_counter"+file_time+".csv"
         f = open(filename, "ab+")
         results=csv.writer(open(filename, "ab+"), delimiter = ",")
