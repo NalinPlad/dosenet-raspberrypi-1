@@ -281,7 +281,7 @@ class App(QWidget):
 
         checkbox = QCheckBox("Save Data")
         checkbox.setFont(QFont("Times", 18, QFont.Bold))
-        checkbox.setChecked(False)
+        checkbox.setChecked(True)
         checkbox.stateChanged.connect(lambda:self.setSaveData(checkbox))
         self.config_layout.addWidget(checkbox)
 
