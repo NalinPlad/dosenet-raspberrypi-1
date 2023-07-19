@@ -1137,8 +1137,9 @@ if __name__ == '__main__':
     # global ex
     # Wrap everything in try/except so that sensor DAQs can be shutdown cleanly
     try:
-        if not arg_dict['test']:
-            clear_queue()
+        # Off because it breaks it
+        # if not arg_dict['test']:
+        #     clear_queue()
         app = QApplication(sys.argv)
         QApplication.setStyle(QStyleFactory.create("Cleanlooks"))
         nbins = 1024
