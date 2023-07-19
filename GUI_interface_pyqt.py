@@ -101,7 +101,7 @@ class App(QWidget):
         self.data_display = {}
         self.data = {}
         self.time_data = {}
-        self.saveData = True
+        self.saveData = False
         self.channels = np.arange(self.nbins, dtype=float) * 2.55
         self.initUI()
 
@@ -284,8 +284,6 @@ class App(QWidget):
         checkbox.setChecked(False)
         checkbox.stateChanged.connect(lambda:self.setSaveData(checkbox))
         self.config_layout.addWidget(checkbox)
-
-        self.setSaveData(checkbox)
 
         self.group_text = QLabel("Group Number:")
         self.group_text.setFont(textfont)
