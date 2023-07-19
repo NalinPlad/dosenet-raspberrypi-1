@@ -353,6 +353,8 @@ class App(QWidget):
             self.location_box.close()
             self.textbox.close()
 
+    setSaveData()
+
     def setIntegrationTime(self,text):
         self.integration_time = int(text)
 
