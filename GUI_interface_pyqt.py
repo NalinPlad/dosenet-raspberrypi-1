@@ -985,8 +985,8 @@ class App(QWidget):
         self.initSensorData('GPS')
         self.startSensor('GPS')
         time_sample = 50
-        if self.test_mode:
-            time_sample = 1000*self.integration_time
+        #if self.test_mode:
+        time_sample = 999*self.integration_time
         print("Starting data collection")
         # Only set start time the first time user clicks start
         if self.start_time is None:
@@ -1001,7 +1001,6 @@ class App(QWidget):
         if not self.test_mode:
             send_queue_cmd('START',self.sensor_list)
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(self.integration_time*1000)
         self.timer.timeout.connect(self.updatePlots)
         self.timer.start(time_sample)
 
