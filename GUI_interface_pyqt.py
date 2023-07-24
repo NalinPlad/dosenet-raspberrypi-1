@@ -1001,7 +1001,7 @@ class App(QWidget):
         if not self.test_mode:
             send_queue_cmd('START',self.sensor_list)
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(self.integration_time)
+        self.timer.setInterval(self.integration_time*1000)
         self.timer.timeout.connect(self.updatePlots)
         self.timer.start(time_sample)
 
