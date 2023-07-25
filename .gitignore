@@ -3,3 +3,6 @@ config.csv
 *.pub
 *.log
 *.DS_Store
+*.key
+*.cert
+*.pem
