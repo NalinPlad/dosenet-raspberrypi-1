@@ -42,6 +42,7 @@ else
     read -p "=> " num
 
     pwd
+    ls
 
     # Add permissions to script
     chmod +x ./rpihotspot/setup_network.sh
