@@ -1,5 +1,7 @@
 echo "Installing everything... make sure to run with sudo"
 
+set -e
+
 git pull --force
 
 # Update and upgrade system
