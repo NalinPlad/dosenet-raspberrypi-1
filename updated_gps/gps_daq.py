@@ -57,6 +57,8 @@ if __name__ == '__main__':
 	server_address = ("0.0.0.0", 443)
 	handler = http.server.SimpleHTTPRequestHandler
 
+	send_data("TEST")
+
 
 
 	# Define Websocket Server
