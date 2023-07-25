@@ -14,7 +14,7 @@ read -p "=> " choice
 
 set -e
 
-if [[ $choice == "1" ]]
+if $choice == "1" 
 then
     git pull --force
 
@@ -41,6 +41,6 @@ else
 
     # Add permissions to script
     chmod +x ./rpihotspot/setup_network.sh
-    
+
     sudo ./rpihotspot/setup_network.sh --install-upgrade --ap-ssid="dosenet-$num" --ap-password="RadwatchAP$num" --ap-country-code="US"
 fi
