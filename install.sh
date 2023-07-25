@@ -47,6 +47,11 @@ else
 
     read -p "=> " num
 
+    # Install rabbitmq
+    sudo apt-get install -y rabbitmq-server
+    sudo systemctl enable rabbitmq-server
+    sudo systemctl start rabbitmq-server
+
     # Add permissions to script
     chmod +x ./rpihotspot/setup-network.sh
 
