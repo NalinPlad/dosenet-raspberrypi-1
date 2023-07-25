@@ -48,22 +48,11 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 	arg_dict = vars(args)
-	
-	uart = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=10)
-
-    # Create a GPS module instance.
-	gps = adafruit_gps.GPS(uart, debug=False)  # Use UART/pyserial
-
-    # Turn on the basic GGA and RMC info (what you typically want)
-	#gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
-	# Turn on everything (not all of it is parsed!)
-	gps.send_command(b'PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0')
-
-    # Set update rate to once a second (1hz) which is what you typically want.
-	gps.send_command(b"PMTK220,500")
 
     # Main loop runs forever printing the location, etc. every second.
 	last_print = time.monotonic()
+
+	have_fix = False
 
 
 	while True: # Starts collecting and plotting data
@@ -77,15 +66,19 @@ if __name__ == '__main__':
 				print("GPS daq has received command to exit")
 				break
 		
-		gps.update()
+		# update gps data
+		have_fix = False
+
         # Every second print out current location details if there's a fix.
 		current = time.monotonic()
 		if current - last_print >= arg_dict['interval']:
 			last_print = current
-			if not gps.has_fix:
+			if not have_fix:
 				# Try again if we don't have a fix yet.
 				print("Waiting for fix...")
 				lat, lon = 0, 0
+				send_data([lat, lon])
+
 			# We have a fix! (gps.has_fix is true)
 			# Print out details about the fix like location, date, etc.
 			lat = gps.latitude
@@ -96,6 +89,6 @@ if __name__ == '__main__':
 
 			print("Latitude: {0:.6f} degrees".format(lat))
 			print("Longitude: {0:.6f} degrees".format(lon))
-			print("Fix quality: {}".format(gps.fix_quality))
+			# print("Fix quality: {}".format(gps.fix_quality))
 							
 		sys.stdout.flush()
