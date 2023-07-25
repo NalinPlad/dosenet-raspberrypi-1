@@ -109,13 +109,24 @@ if __name__ == '__main__':
 	thread.start()
 
 	# Run HTTPS Server
-	with socketserver.TCPServer(server_address, handler) as httpd:
+	def runHttps():
+		with socketserver.TCPServer(server_address, handler) as httpd:
 
-		httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+			httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
 
-		httpd.serve_forever()
+			httpd.serve_forever()
+
+	httpsthread = threading.Thread(target=runHttps)
+	httpsthread.start()
 
 
+	while True:
+		if not arg_dict['test']:
+			command = receive('GPS', 'fromGUI')
+
+			if command == 'EXIT':
+				print("GPS daq has received command to exit")
+				SystemExit(0)
 
 
 
