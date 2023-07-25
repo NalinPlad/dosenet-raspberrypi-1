@@ -34,6 +34,9 @@ then
     # Create data folder
     mkdir /home/pi/data
 
+    # Generate ssl certs
+    sudo ./updated_gps/gensslcert.sh
+
     # Add permissions to script
     chmod +x ./rpihotspot/setup-network.sh
 

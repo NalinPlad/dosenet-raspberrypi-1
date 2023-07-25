@@ -5,11 +5,6 @@ import sys
 import time
 import argparse
 
-import board
-import busio
-import serial
-import adafruit_gps
-
 
 sys.stdout.flush()
 
@@ -53,54 +48,98 @@ if __name__ == '__main__':
 
 	args = parser.parse_args()
 	arg_dict = vars(args)
-	
-	uart = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=10)
 
-    # Create a GPS module instance.
-	gps = adafruit_gps.GPS(uart, debug=False)  # Use UART/pyserial
+	# Define HTTPS Server
+	import http.server, ssl, socketserver, qrcode
 
-    # Turn on the basic GGA and RMC info (what you typically want)
-	#gps.send_command(b"PMTK314,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
-	# Turn on everything (not all of it is parsed!)
-	gps.send_command(b'PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0')
-
-    # Set update rate to once a second (1hz) which is what you typically want.
-	gps.send_command(b"PMTK220,500")
-
-    # Main loop runs forever printing the location, etc. every second.
-	last_print = time.monotonic()
+	context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+	context.load_cert_chain("dosenet.cert", "dosenet.key")
+	server_address = ("0.0.0.0", 443)
+	handler = http.server.SimpleHTTPRequestHandler
 
 
-	while True: # Starts collecting and plotting data
+
+	# Define Websocket Server
+	import asyncio
+	from websockets.server import serve
+
+	async def resp(websocket, path):
+		async for message in websocket:
+			print(message)
+			send_data(message)
+			if(message == "clientping"):
+				await websocket.send("serverpong")
+
+				# temporary send this json payload
+				await websocket.send(f"start:{arg_dict['interval']}")
+			
+
+	async def main():
+		async with serve(resp, "0.0.0.0", 8765, ssl=context):
+			await asyncio.Future()  # run forever
+
+
+	# Get ip addr
+	import socket
+	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	s.connect(("8.8.8.8", 80))
+	IPAddr = s.getsockname()[0]
+	s.close()
+
+	# Print QR Code optimistically
+	url = f"https://{IPAddr}/www/"
+	qr = qrcode.QRCode()
+	qr.add_data(url)
+	qr.print_ascii()
+	print(url)
+
+
+	# Run Websocket Server (in background)
+	import threading
+	thread = threading.Thread(target=asyncio.run, args=(main(),))
+	thread.start()
+
+	# Run HTTPS Server
+	with socketserver.TCPServer(server_address, handler) as httpd:
+
+		httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+
+		httpd.serve_forever()
+
+
+
+
+
+	# while True: # Starts collecting and plotting data
 		
-		lat, lon = 0, 0
+	# 	lat, lon = 0, 0
 		
-		if not arg_dict['test']:
-			command = receive('GPS', 'fromGUI')
+	# 	if not arg_dict['test']:
+	# 		command = receive('GPS', 'fromGUI')
 
-			if command == 'EXIT':
-				print("GPS daq has received command to exit")
-				break
+	# 		if command == 'EXIT':
+	# 			print("GPS daq has received command to exit")
+	# 			break
 		
-		gps.update()
-        # Every second print out current location details if there's a fix.
-		current = time.monotonic()
-		if current - last_print >= arg_dict['interval']:
-			last_print = current
-			if not gps.has_fix:
-				# Try again if we don't have a fix yet.
-				print("Waiting for fix...")
-				lat, lon = 0, 0
-			# We have a fix! (gps.has_fix is true)
-			# Print out details about the fix like location, date, etc.
-			lat = gps.latitude
-			lon = gps.longitude
-			if not arg_dict['test']:
-				print("GPS: ",[lat,lon])
-				send_data([lat, lon])
+	# 	gps.update()
+    #     # Every second print out current location details if there's a fix.
+	# 	current = time.monotonic()
+	# 	if current - last_print >= arg_dict['interval']:
+	# 		last_print = current
+	# 		if not gps.has_fix:
+	# 			# Try again if we don't have a fix yet.
+	# 			print("Waiting for fix...")
+	# 			lat, lon = 0, 0
+	# 		# We have a fix! (gps.has_fix is true)
+	# 		# Print out details about the fix like location, date, etc.
+	# 		lat = gps.latitude
+	# 		lon = gps.longitude
+	# 		if not arg_dict['test']:
+	# 			print("GPS: ",[lat,lon])
+	# 			send_data([lat, lon])
 
-			print("Latitude: {0:.6f} degrees".format(lat))
-			print("Longitude: {0:.6f} degrees".format(lon))
-			print("Fix quality: {}".format(gps.fix_quality))
+	# 		print("Latitude: {0:.6f} degrees".format(lat))
+	# 		print("Longitude: {0:.6f} degrees".format(lon))
+	# 		print("Fix quality: {}".format(gps.fix_quality))
 							
-		sys.stdout.flush()
+	# 	sys.stdout.flush()
