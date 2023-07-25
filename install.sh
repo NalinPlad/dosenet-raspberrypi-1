@@ -39,3 +39,4 @@ else
 
     read -p "=> " num
     sudo ./rpihotspot/setup_network.sh --install-upgrade --ap-ssid="dosenet-$num" --ap-password="RadwatchAP$num" --ap-country-code="US"
+fi
