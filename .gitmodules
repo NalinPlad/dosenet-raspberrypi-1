@@ -1,0 +1,3 @@
+[submodule "rpihotspot"]
+	path = rpihotspot
+	url = https://github.com/idev1/rpihotspot.git
