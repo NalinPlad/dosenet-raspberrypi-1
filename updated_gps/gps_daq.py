@@ -8,6 +8,13 @@ import argparse
 
 sys.stdout.flush()
 
+def log(log_text):
+	'''
+	Appends log_text to log_file
+	'''
+	with open('/var/tmp/gps.log', 'a') as f:
+		f.write(log_text)
+
 def send_data(data):
 	connection = pika.BlockingConnection(
 					  pika.ConnectionParameters('localhost'))
@@ -57,7 +64,7 @@ if __name__ == '__main__':
 	server_address = ("0.0.0.0", 443)
 	handler = http.server.SimpleHTTPRequestHandler
 
-	send_data("TEST")
+	send_data([100.0,200.0])
 
 
 
