@@ -204,7 +204,7 @@ class App(QWidget):
 
     def startSensor(self, sensor):
         if sensor=='GPS':
-            py = 'python3'
+            py = 'sudo python3'
             script = 'updated_gps/gps_daq.py'
             log = 'gps_gui.log'
         if sensor==PTH:
