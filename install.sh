@@ -14,7 +14,7 @@ read -p "=> " choice
 
 set -e
 
-if [[ $choice == "1" ]]
+if [ $choice == "1" ]
 then
     git pull --force
 
