@@ -32,20 +32,17 @@ then
     cp -f *.desktop /home/pi/Desktop
 
     # Add permissions to script
-    chmod +x ./rpihotspot/setup_network.sh
+    chmod +x ./rpihotspot/setup-network.sh
 
     # Clean existing configs
-    sudo ./rpihotspot/setup_network.sh --clean
+    sudo ./rpihotspot/setup-network.sh --clean
 else
     echo "Enter the number of the monitor:"
 
     read -p "=> " num
 
-    pwd
-    ls -R
-
     # Add permissions to script
-    chmod +x ./rpihotspot/setup_network.sh
+    chmod +x ./rpihotspot/setup-network.sh
 
-    sudo ./rpihotspot/setup_network.sh --install-upgrade --ap-ssid="dosenet-$num" --ap-password="RadwatchAP$num" --ap-country-code="US"
+    sudo ./rpihotspot/setup-network.sh --install-upgrade --ap-ssid="dosenet-$num" --ap-password="RadwatchAP$num" --ap-country-code="US"
 fi
