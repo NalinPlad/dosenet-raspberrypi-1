@@ -895,7 +895,7 @@ class App(QWidget):
 
     def create_file(self, fname = None):
         file_name = self.file_path + fname
-        self.out_file = open(file_name, "a+",newline="")
+        self.out_file = open(file_name, "w",newline="")
         self.results = csv.writer(self.out_file, delimiter = ",")
         metadata = ["Time", "Latitude", "Longitude"]
         for sensor in self.sensor_list:
@@ -912,7 +912,7 @@ class App(QWidget):
             if sensor==RAD:
                 metadata.append("counts")
                 spec_name = self.file_path + 'Spectrum_' + fname
-                self.spectrum_file = open(spec_name, "a+", newline="")
+                self.spectrum_file = open(spec_name, "w", newline="")
                 self.spectrum_results = csv.writer(self.spectrum_file, delimiter = ",")
                 self.spectrum_results.writerow(['Timestamp'] + list(range(0,self.nbins)))
                 self.spectrum_file.flush()
