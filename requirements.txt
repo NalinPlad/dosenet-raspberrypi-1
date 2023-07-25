@@ -24,3 +24,4 @@ scipy==1.11.1
 sender==0.3
 sensor==6
 qrcode==7.4.2
+websockets==11.0.3
