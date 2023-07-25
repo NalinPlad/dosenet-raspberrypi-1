@@ -31,6 +31,9 @@ then
     # Copy all .desktop files to desktop
     cp -f *.desktop /home/pi/Desktop
 
+    # Create data folder
+    mkdir /home/pi/data
+
     # Add permissions to script
     chmod +x ./rpihotspot/setup-network.sh
 
