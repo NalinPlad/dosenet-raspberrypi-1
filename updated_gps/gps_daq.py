@@ -5,11 +5,6 @@ import sys
 import time
 import argparse
 
-import board
-import busio
-import serial
-import adafruit_gps
-
 
 sys.stdout.flush()
 
