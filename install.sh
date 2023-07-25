@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Installing everything... make sure to run with sudo"
 
 echo "-------------------------------------"
@@ -14,7 +16,7 @@ read -p "=> " choice
 
 set -e
 
-if [ $choice == "1" ]
+if [[ $choice == "1" ]]
 then
     git pull --force
 
