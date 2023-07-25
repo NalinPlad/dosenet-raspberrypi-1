@@ -38,5 +38,9 @@ else
     echo "Enter the number of the monitor:"
 
     read -p "=> " num
+
+    # Add permissions to script
+    chmod +x ./rpihotspot/setup_network.sh
+    
     sudo ./rpihotspot/setup_network.sh --install-upgrade --ap-ssid="dosenet-$num" --ap-password="RadwatchAP$num" --ap-country-code="US"
 fi
