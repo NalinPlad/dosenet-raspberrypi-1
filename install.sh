@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# TOOOOOODOOOOOOO
+# ENABLE I2C AND OTHER INTERFACES. IT WONT WORK WITHOUT IT
+
+
 echo "Installing everything... make sure to run with sudo"
 
 echo "-------------------------------------"

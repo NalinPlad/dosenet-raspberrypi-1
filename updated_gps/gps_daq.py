@@ -77,12 +77,11 @@ if __name__ == '__main__':
 				# Try again if we don't have a fix yet.
 				print("Waiting for fix...")
 				lat, lon = 0, 0
-				send_data([lat, lon])
 
 			# We have a fix! (gps.has_fix is true)
 			# Print out details about the fix like location, date, etc.
-			lat = gps.latitude
-			lon = gps.longitude
+			lat = 0
+			lon = 0
 			if not arg_dict['test']:
 				print("GPS: ",[lat,lon])
 				send_data([lat, lon])
