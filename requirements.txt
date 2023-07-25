@@ -1,4 +1,6 @@
 Adafruit_BME280==1.0.1
+Adafruit-Blinka==8.20.0
+adafruit-circuitpython-pm25==2.1.14
 Adafruit_GPIO==1.0.3
 Adafruit_MCP3008==1.0.2
 board==1.0
