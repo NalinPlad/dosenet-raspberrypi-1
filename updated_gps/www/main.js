@@ -1,5 +1,17 @@
 const status = document.querySelector("#status");
 
+// Create a reference for the Wake Lock.
+let wakeLock = null;
+
+// create an async function to request a wake lock
+try {
+  wakeLock = await navigator.wakeLock.request("screen");
+} catch (err) {
+  // The Wake Lock request has failed - usually system related, such as battery.
+  alert("The Wake Lock API is not supported by your browser. Make sure that your screen is always on!");
+}
+
+
 function msToTime(ms) {
   let seconds = (ms / 1000).toFixed(1);
   let minutes = (ms / (1000 * 60)).toFixed(1);
