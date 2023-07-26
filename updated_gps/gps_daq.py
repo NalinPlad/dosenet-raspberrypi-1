@@ -10,7 +10,7 @@ import os
 
 # chdir to www folder
 sys.stdout.flush()
-web_dir = os.path.join(os.path.dirname(__file__), './updated_gps/www')
+web_dir = os.path.join(os.path.dirname(__file__), 'updated_gps/www')
 os.chdir(web_dir)
 
 def send_data(data):
