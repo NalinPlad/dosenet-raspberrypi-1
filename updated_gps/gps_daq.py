@@ -63,7 +63,7 @@ if __name__ == '__main__':
 	handler = http.server.SimpleHTTPRequestHandler
 
 	# Define Websocket Server
-	import asyncio
+	import asyncio, signal
 	from websockets.server import serve
 
 	async def resp(websocket, path):
@@ -80,11 +80,20 @@ if __name__ == '__main__':
 	async def main():
 		async with serve(resp, "0.0.0.0", 8765, ssl=context):
 			print("webscoekt server started")
-			await asyncio.Future()  # run forever
+			await stop
+
+	loop = asyncio.get_event_loop()
+
+	# The stop condition is set when receiving SIGTERM.
+	stop = loop.create_future()
+	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
+
+	# Run the server until the stop condition is met.
+	loop.run_until_complete(main(stop))
 
 	# Run Websocket Server (in background)
 	import threading
-	thread = threading.Thread(target=asyncio.run, args=(main(),))
+	thread = threading.Thread(target=loop.run_until_complete, args=(main(stop),))
 	thread.start()
 	
 
@@ -98,6 +107,13 @@ if __name__ == '__main__':
 
 			if command == 'EXIT':
 				print("GPS daq has received command to exit")
+				
+				# kill the websocket server
+				stop.set_result(None)
+				
+
+
+
 				break
 		
 		# update gps data
