@@ -1012,7 +1012,6 @@ class App(QWidget):
         '''
         if not self.test_mode:
             send_queue_cmd('STOP',self.sensor_list)
-        send_queue_cmd('EXIT', ['GPS'])
         self.timer.stop()
 
         if self.saveData:
@@ -1060,6 +1059,7 @@ class App(QWidget):
         if not self.test_mode:
             print("Sending EXIT command to all active sensors")
             send_queue_cmd('EXIT',self.sensor_list)
+            send_queue_cmd('EXIT', ['GPS'])
             time.sleep(2)
 
 
