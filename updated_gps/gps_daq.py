@@ -74,6 +74,7 @@ if __name__ == '__main__':
 			func()
 		t = threading.Timer(sec, func_wrapper)
 		t.start()
+		t.join()
 		return t
 
 	async def resp(websocket, path):
