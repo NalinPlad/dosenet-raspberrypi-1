@@ -110,6 +110,11 @@ if __name__ == '__main__':
 				
 				# kill the websocket server
 				stop.set_result(None)
+
+				print("sys exit")
+				
+				# close program
+				sys.exit(0)
 				
 
 
