@@ -118,11 +118,6 @@ if __name__ == '__main__':
 				
 				# close program
 				sys.exit(0)
-				
-
-
-
-				break
 		
 		# update gps data
 		have_fix = False
