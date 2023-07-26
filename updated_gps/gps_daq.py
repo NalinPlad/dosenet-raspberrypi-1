@@ -66,15 +66,22 @@ if __name__ == '__main__':
 	import asyncio, signal
 	from websockets.server import serve
 
+	interval = arg_dict['interval']
+
+	def set_interval(func, sec):
+		def func_wrapper():
+			set_interval(func, sec)
+			func()
+		t = threading.Timer(sec, func_wrapper)
+		t.start()
+		return t
+
 	async def resp(websocket, path):
 		async for message in websocket:
 			print(message)
 			if(message == "clientping"):
 				await websocket.send("serverpong")
-
-				# temporary send this json payload
-				await websocket.send("start")
-			# await websocket.send(message)
+				set_interval(await websocket.send("getloc"), interval)
 			
 
 	async def main(stop):
