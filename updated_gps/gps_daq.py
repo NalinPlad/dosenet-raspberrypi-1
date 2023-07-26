@@ -53,6 +53,8 @@ if __name__ == '__main__':
 	last_print = time.monotonic()
 
 	have_fix = False
+	interval = arg_dict['interval']
+	lat, lon = 0, 0
 
 	# Define HTTPS Server
 	import http.server, ssl, socketserver
@@ -66,23 +68,22 @@ if __name__ == '__main__':
 	import asyncio, signal
 	from websockets.server import serve
 
-	interval = arg_dict['interval']
+	
 
-	def set_interval(func, sec):
-		def func_wrapper():
-			set_interval(func, sec)
-			func()
-		t = threading.Timer(sec, func_wrapper)
-		t.start()
-		t.join()
-		return t
+	import json
 
 	async def resp(websocket, path):
 		async for message in websocket:
 			print(message)
 			if(message == "clientping"):
-				await websocket.send("serverpong")
-				set_interval(await websocket.send("getloc"), interval)
+				await websocket.send(f"serverpong:{interval}")
+				global have_fix
+				have_fix = True
+			elif(message.startswith("loc:")):
+				# parse with format loc:lat:lon
+				global lat, lon
+				lat, lon = message.split(":")[1:]
+
 			
 
 	async def main(stop):
@@ -108,7 +109,6 @@ if __name__ == '__main__':
 
 	while True: # Starts collecting and plotting data
 		
-		lat, lon = 0, 0
 		
 		if not arg_dict['test']:
 			command = receive('GPS', 'fromGUI')
@@ -141,8 +141,6 @@ if __name__ == '__main__':
 
 			# We have a fix! (gps.has_fix is true)
 			# Print out details about the fix like location, date, etc.
-			lat = 0
-			lon = 0
 			if not arg_dict['test']:
 				print("GPS: ",[lat,lon])
 				send_data([lat, lon])
