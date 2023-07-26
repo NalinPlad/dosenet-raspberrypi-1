@@ -79,6 +79,7 @@ if __name__ == '__main__':
 
 	async def main():
 		async with serve(resp, "0.0.0.0", 8765, ssl=context):
+			print("webscoekt server started")
 			await asyncio.Future()  # run forever
 	
 
