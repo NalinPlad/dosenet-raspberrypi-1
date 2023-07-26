@@ -1,3 +1,4 @@
+from http.server import HTTPServer
 import json
 
 import pika
@@ -56,13 +57,12 @@ if __name__ == '__main__':
 	interval = arg_dict['interval']
 	lat, lon = 0, 0
 
-	# Define HTTPS Server
+	# Define ssl context
 	import http.server, ssl, socketserver
 
 	context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 	context.load_cert_chain("dosenet.cert", "dosenet.key")
-	server_address = ("0.0.0.0", 443)
-	handler = http.server.SimpleHTTPRequestHandler
+
 
 	# Define Websocket Server
 	import asyncio, signal
@@ -104,6 +104,25 @@ if __name__ == '__main__':
 	import threading
 	thread = threading.Thread(target=loop.run_until_complete, args=(main(stop),))
 	thread.start()
+
+
+ 	# Define HTTPS Server
+	server_address = ("0.0.0.0", 443)
+	handler = http.server.SimpleHTTPRequestHandler
+
+	def run_server(server_class=HTTPServer, handler_class=SimpleHandler):
+		httpd = server_class(server_address, handler_class)
+		httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+		print("Server running in thread:", threading.current_thread().name)
+		httpd.serve_forever()
+		print("Server has shutdown.")
+
+	server_thread = threading.Thread(target=run_server)
+	server_thread.daemon = True
+
+	server_thread.start()  # Server starts in new thread.
+
+	
 	
 
 
@@ -121,6 +140,9 @@ if __name__ == '__main__':
 				
 				# kill the websocket server
 				stop.set_result(None)
+				
+				# kill the https server
+				server_thread._stop()
 
 				print("sys exit")
 				
