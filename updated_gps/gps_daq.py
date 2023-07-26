@@ -81,6 +81,11 @@ if __name__ == '__main__':
 		async with serve(resp, "0.0.0.0", 8765, ssl=context):
 			print("webscoekt server started")
 			await asyncio.Future()  # run forever
+
+	# Run Websocket Server (in background)
+	import threading
+	thread = threading.Thread(target=asyncio.run, args=(main(),))
+	thread.start()
 	
 
 
