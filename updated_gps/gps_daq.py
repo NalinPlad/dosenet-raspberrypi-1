@@ -77,7 +77,7 @@ if __name__ == '__main__':
 			# await websocket.send(message)
 			
 
-	async def main():
+	async def main(stop):
 		async with serve(resp, "0.0.0.0", 8765, ssl=context):
 			print("webscoekt server started")
 			await stop
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 	loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
 
 	# Run the server until the stop condition is met.
-	loop.run_until_complete(main(stop))
+	# loop.run_until_complete(main(stop))
 
 	# Run Websocket Server (in background)
 	import threading
