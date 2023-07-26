@@ -60,9 +60,8 @@ function initWebSocketConnection() {
   };
 
   ws.onmessage = function (event) {
-    if (event.data == "serverpong") {
+    if (event.data.startsWith("serverpong")) {
       logData(`WebSocket Connection is alive`, "green");
-
       logData(`Starting Sending Data!`, "green");
       const interval = parseInt(event.data.split(":")[1]);
       logData(`Interval is ${interval}s`, "green");
