@@ -80,9 +80,9 @@ if __name__ == '__main__':
 				global have_fix
 				have_fix = True
 			elif(message.startswith("loc:")):
-				# parse with format loc:lat:lon
+				# parse with format loc:lat:lon and parse as number
 				global lat, lon
-				lat, lon = message.split(":")[1:]
+				lat, lon = [float(x) for x in message.split(":")[1:]]
 
 			
 
