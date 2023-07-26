@@ -65,7 +65,7 @@ if __name__ == '__main__':
 	import http.server, ssl, socketserver
 
 	context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-	context.load_cert_chain("dosenet.cert", "dosenet.key")
+	context.load_cert_chain("../dosenet.cert", "../dosenet.key")
 
 
 	# Define Websocket Server
