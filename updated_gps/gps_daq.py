@@ -54,6 +54,34 @@ if __name__ == '__main__':
 
 	have_fix = False
 
+	# Define HTTPS Server
+	import http.server, ssl, socketserver
+
+	context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+	context.load_cert_chain("dosenet.cert", "dosenet.key")
+	server_address = ("0.0.0.0", 443)
+	handler = http.server.SimpleHTTPRequestHandler
+
+	# Define Websocket Server
+	import asyncio
+	from websockets.server import serve
+
+	async def resp(websocket, path):
+		async for message in websocket:
+			print(message)
+			if(message == "clientping"):
+				await websocket.send("serverpong")
+
+				# temporary send this json payload
+				await websocket.send("start")
+			# await websocket.send(message)
+			
+
+	async def main():
+		async with serve(resp, "0.0.0.0", 8765, ssl=context):
+			await asyncio.Future()  # run forever
+	
+
 
 	while True: # Starts collecting and plotting data
 		
