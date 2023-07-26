@@ -1012,7 +1012,9 @@ class App(QWidget):
         '''
         if not self.test_mode:
             send_queue_cmd('STOP',self.sensor_list)
+        send_queue_cmd('STOP', ['GPS'])
         self.timer.stop()
+
         if self.saveData:
             self.close_file()
 

@@ -105,7 +105,8 @@ if __name__ == '__main__':
 		if not arg_dict['test']:
 			command = receive('GPS', 'fromGUI')
 
-			print(command)
+			if command != None:
+				print(command)
 
 			if command == 'EXIT':
 				print("GPS daq has received command to exit")
