@@ -110,7 +110,7 @@ if __name__ == '__main__':
 	server_address = ("0.0.0.0", 443)
 	handler = http.server.SimpleHTTPRequestHandler
 
-	def run_server(server_class=HTTPServer, handler_class=SimpleHandler):
+	def run_server(server_class=HTTPServer, handler_class=handler):
 		httpd = server_class(server_address, handler_class)
 		httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
 		print("Server running in thread:", threading.current_thread().name)
@@ -140,7 +140,7 @@ if __name__ == '__main__':
 				
 				# kill the websocket server
 				stop.set_result(None)
-				
+
 				# kill the https server
 				server_thread._stop()
 
