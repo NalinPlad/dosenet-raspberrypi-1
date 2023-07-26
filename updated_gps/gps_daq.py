@@ -126,9 +126,6 @@ if __name__ == '__main__':
 				
 				# close program
 				sys.exit(0)
-		
-		# update gps data
-		have_fix = False
 
         # Every second print out current location details if there's a fix.
 		current = time.monotonic()
